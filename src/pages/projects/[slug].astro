@@ -1,0 +1,73 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+	// Held-back projects don't get a public route at all — filtered here,
+	// at path-generation time, rather than merely un-linked, so the page
+	// genuinely doesn't exist for them (a direct URL guess 404s).
+	const projects = await getCollection("projects", ({ data }) => data.status === "featured");
+	return projects.map((project) => ({
+		params: { slug: project.data.slug },
+		props: { project },
+	}));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<Layout title={`${project.data.name} — Newton Sythong`} description={project.data.description}>
+	<article>
+		<p><a href="/#projects">← Back to Projects</a></p>
+		<h1>{project.data.name}</h1>
+		<p>{project.data.description}</p>
+		<p class="contribution"><strong>My contribution:</strong> {project.data.contribution}</p>
+		{
+			project.data.tags.length > 0 && (
+				<ul class="tags">
+					{project.data.tags.map((tag) => (
+						<li>{tag}</li>
+					))}
+				</ul>
+			)
+		}
+		{
+			project.data.liveDemoUrl && (
+				<p>
+					<a href={project.data.liveDemoUrl} target="_blank" rel="noopener noreferrer">
+						Live demo
+					</a>
+				</p>
+			)
+		}
+		<Content />
+	</article>
+</Layout>
+
+<style>
+	article {
+		padding: 3rem 1.5rem;
+		max-width: 40rem;
+	}
+
+	h1 {
+		font-family: monospace;
+		color: var(--color-accent);
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 0;
+		list-style: none;
+		font-size: 0.8rem;
+	}
+
+	.tags li {
+		border: 1px solid currentColor;
+		border-radius: 999px;
+		padding: 0.1rem 0.6rem;
+	}
+</style>
