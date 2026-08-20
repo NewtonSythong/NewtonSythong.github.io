@@ -40,7 +40,9 @@ const navLinks = [
 						))
 					}
 				</ul>
-				<!-- Theme toggle control is added in ticket 03 -->
+				<button id="theme-toggle" type="button" aria-label="Toggle color theme">
+					Toggle theme
+				</button>
 			</nav>
 		</header>
 		<main>
@@ -48,3 +50,58 @@ const navLinks = [
 		</main>
 	</body>
 </html>
+
+<style>
+	:root {
+		--color-bg: #ffffff;
+		--color-text: #12131a;
+		--color-accent: #3b5bfd;
+	}
+
+	:root[data-theme="dark"] {
+		--color-bg: #0b0e17;
+		--color-text: #e6e8f0;
+		--color-accent: #7c9bff;
+	}
+
+	body {
+		margin: 0;
+		background-color: var(--color-bg);
+		color: var(--color-text);
+		font-family: system-ui, sans-serif;
+	}
+
+	#theme-toggle {
+		background: none;
+		border: 1px solid currentColor;
+		color: inherit;
+		border-radius: 999px;
+		padding: 0.25rem 0.75rem;
+		font: inherit;
+		cursor: pointer;
+	}
+</style>
+
+<script>
+	import { resolveInitialTheme, toggleTheme, type Theme } from "../lib/theme";
+
+	function applyTheme(theme: Theme) {
+		document.documentElement.dataset.theme = theme;
+		const button = document.getElementById("theme-toggle");
+		button?.setAttribute("aria-pressed", String(theme === "dark"));
+	}
+
+	// Astro bundles this as a deferred module script, so there's a brief
+	// window before it runs where the page still shows the CSS default
+	// (light) theme. Accepted trade-off: it keeps theme-resolution logic
+	// single-sourced in the tested ../lib/theme module instead of
+	// duplicating it into a raw `is:inline` bootstrap script.
+	applyTheme(
+		resolveInitialTheme(window.localStorage, window.matchMedia("(prefers-color-scheme: dark)")),
+	);
+
+	document.getElementById("theme-toggle")?.addEventListener("click", () => {
+		const current = (document.documentElement.dataset.theme as Theme | undefined) ?? "light";
+		applyTheme(toggleTheme(current, window.localStorage));
+	});
+</script>
