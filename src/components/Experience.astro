@@ -1,0 +1,78 @@
+---
+import { getCollection } from "astro:content";
+
+// Fixture/placeholder entries live in src/content/experience/ at this
+// stage (ticket 10 replaces them with real content) — nothing here is
+// hardcoded per-entry, so adding a new valid entry to the collection is
+// enough for it to appear below with no code changes.
+const entries = await getCollection("experience");
+const sorted = [...entries].sort((a, b) => b.data.startDate.localeCompare(a.data.startDate));
+---
+
+<section id="experience" aria-labelledby="experience-heading">
+	<h2 id="experience-heading">Experience</h2>
+	<ol>
+		{
+			sorted.map((entry) => (
+				<li>
+					<h3>
+						{entry.data.title} · {entry.data.organization}
+					</h3>
+					<p class="dates">
+						{entry.data.startDate}
+						{entry.data.endDate ? ` – ${entry.data.endDate}` : " – Present"}
+					</p>
+					<p>{entry.data.description}</p>
+					{entry.data.tags.length > 0 && (
+						<ul class="tags">
+							{entry.data.tags.map((tag) => (
+								<li>{tag}</li>
+							))}
+						</ul>
+					)}
+				</li>
+			))
+		}
+	</ol>
+</section>
+
+<style>
+	section {
+		padding: 3rem 1.5rem;
+		max-width: 40rem;
+	}
+
+	h2 {
+		font-family: monospace;
+		color: var(--color-accent);
+	}
+
+	ol {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		padding: 0;
+	}
+
+	.dates {
+		font-family: monospace;
+		font-size: 0.875rem;
+		opacity: 0.75;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 0;
+		list-style: none;
+		font-size: 0.8rem;
+	}
+
+	.tags li {
+		border: 1px solid currentColor;
+		border-radius: 999px;
+		padding: 0.1rem 0.6rem;
+	}
+</style>
