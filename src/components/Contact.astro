@@ -1,0 +1,32 @@
+---
+// Placeholder email and résumé asset (public/resume.pdf) at this stage —
+// ticket 10 replaces both with Newton's real contact address and a PDF
+// generated from his canonical CV.
+const email = "newton@example.com";
+---
+
+<section id="contact" aria-labelledby="contact-heading">
+	<h2 id="contact-heading">Contact</h2>
+	<p>
+		<a href={`mailto:${email}`}>{email}</a>
+	</p>
+	<p>
+		<a href="/resume.pdf" download>Download résumé (PDF)</a>
+	</p>
+</section>
+
+<style>
+	section {
+		padding: 3rem 1.5rem;
+		max-width: 40rem;
+	}
+
+	h2 {
+		font-family: monospace;
+		color: var(--color-accent);
+	}
+
+	a {
+		color: var(--color-accent);
+	}
+</style>
