@@ -1,0 +1,61 @@
+---
+import { getCollection } from "astro:content";
+
+// Derived from the tech-stack tags already on `experience` and `projects`
+// entries — no separately hand-maintained skills list. A new tag on either
+// collection appears here automatically with no code changes; likewise,
+// the `projects` collection is empty until ticket 07 adds fixture entries,
+// and this section already degrades gracefully to whatever tags exist.
+const experience = await getCollection("experience");
+const projects = await getCollection("projects");
+
+const tags = [
+	...new Set([
+		...experience.flatMap((entry) => entry.data.tags),
+		...projects.flatMap((entry) => entry.data.tags),
+	]),
+].sort((a, b) => a.localeCompare(b));
+---
+
+<section id="skills" aria-labelledby="skills-heading">
+	<h2 id="skills-heading">Skills</h2>
+	{
+		tags.length > 0 ? (
+			<ul class="tags">
+				{tags.map((tag) => (
+					<li>{tag}</li>
+				))}
+			</ul>
+		) : (
+			<p>No skills recorded yet.</p>
+		)
+	}
+</section>
+
+<style>
+	section {
+		padding: 3rem 1.5rem;
+		max-width: 40rem;
+	}
+
+	h2 {
+		font-family: monospace;
+		color: var(--color-accent);
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 0;
+		list-style: none;
+	}
+
+	.tags li {
+		border: 1px solid currentColor;
+		border-radius: 999px;
+		padding: 0.25rem 0.75rem;
+		font-family: monospace;
+		font-size: 0.875rem;
+	}
+</style>
