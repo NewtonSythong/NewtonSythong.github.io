@@ -1,0 +1,86 @@
+---
+import { getCollection } from "astro:content";
+
+// Fixture/placeholder entries live in src/content/projects/ at this stage
+// (ticket 10 replaces them with real content). `status: "held-back"`
+// entries are filtered out here rather than at the schema level, so they
+// stay valid content that simply isn't ready to feature yet.
+const allProjects = await getCollection("projects");
+const featured = allProjects.filter((project) => project.data.status === "featured");
+---
+
+<section id="projects" aria-labelledby="projects-heading">
+	<h2 id="projects-heading">Projects</h2>
+	<ul class="project-list">
+		{
+			featured.map((project) => (
+				<li>
+					<h3>
+						<a href={`/projects/${project.data.slug}`}>{project.data.name}</a>
+					</h3>
+					<p>{project.data.description}</p>
+					<p class="contribution">
+						<strong>My contribution:</strong> {project.data.contribution}
+					</p>
+					{project.data.tags.length > 0 && (
+						<ul class="tags">
+							{project.data.tags.map((tag) => (
+								<li>{tag}</li>
+							))}
+						</ul>
+					)}
+					{project.data.liveDemoUrl && (
+						<p>
+							<a href={project.data.liveDemoUrl} target="_blank" rel="noopener noreferrer">
+								Live demo
+							</a>
+						</p>
+					)}
+				</li>
+			))
+		}
+	</ul>
+</section>
+
+<style>
+	section {
+		padding: 3rem 1.5rem;
+		max-width: 40rem;
+	}
+
+	h2 {
+		font-family: monospace;
+		color: var(--color-accent);
+	}
+
+	.project-list {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		padding: 0;
+	}
+
+	h3 a {
+		color: inherit;
+	}
+
+	.contribution {
+		font-size: 0.9rem;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 0;
+		list-style: none;
+		font-size: 0.8rem;
+	}
+
+	.tags li {
+		border: 1px solid currentColor;
+		border-radius: 999px;
+		padding: 0.1rem 0.6rem;
+	}
+</style>
