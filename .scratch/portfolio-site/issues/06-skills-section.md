@@ -4,9 +4,13 @@
 
 **Blocked by:** 02, 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Skills section derives its displayed tags from the tech-stack tags on `experience` and `projects` collection entries
-- [ ] Reachable via an anchor (`#skills`)
-- [ ] Visually correct in both light and dark theme states
-- [ ] Adding a new tag to a collection entry causes it to appear in the Skills section without further code changes (or, if a dedicated `skills` collection was introduced instead per the spec's fallback, that decision is noted here)
+- [x] Skills section derives its displayed tags from the tech-stack tags on `experience` and `projects` collection entries
+- [x] Reachable via an anchor (`#skills`)
+- [x] Visually correct in both light and dark theme states
+- [x] Adding a new tag to a collection entry causes it to appear in the Skills section without further code changes (or, if a dedicated `skills` collection was introduced instead per the spec's fallback, that decision is noted here)
+
+## Comments
+
+Verified: `src/components/Skills.astro` derives its tag set from `getCollection("experience")` + `getCollection("projects")` with no separate hand-maintained list, as the spec's default path called for — no fallback `skills` collection was needed. Ticket 13's commit history notes this also picked up Newton's Java/OOP tags automatically once ProductCatalouge/BasicImageEditor were added, with no code change required — direct proof the "no further code changes" bar holds.

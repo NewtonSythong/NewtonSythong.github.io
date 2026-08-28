@@ -38,12 +38,9 @@ All of Newton's current public repos are University of Otago team coursework —
 | Project | Stack | Status | Notes |
 |---|---|---|---|
 | **Fresh-Flat** | Next.js + Supabase | Live demo working: `fresh-flat.vercel.app` | README needs a public-facing rewrite (currently links to Otago-only SharePoint docs). Newton's contributions: flat/invite CRUD API, join/leave-flat features. |
-| **Note-Pilot** | Next.js 15 + Prisma 6, AI study/notes tool | Not yet deployed — deployment is in scope for this project | See "Note-Pilot deployment" below. Most technically sophisticated repo, most recent activity. |
-
-### Held back for later (not launch blockers)
-
-- **ProductCatalouge** — Java/Jooby + Vue e-commerce app. No live demo, localhost-only currently.
-- **BasicImageEditor ("ANDIE")** — Java desktop image editor. No live demo; would need screenshots/GIF since it's a GUI app, not a web app.
+| **Note-Pilot** | Next.js 15 + Prisma 6, AI study/notes tool | Deployed: `note-pilot-sage.vercel.app` | Most technically sophisticated repo, most recent activity. Redeployed under ticket 11 with a Newton-administered Neon database. |
+| **ProductCatalouge** | Java/Jooby + Vue e-commerce app | No live demo, localhost-only | Promoted from held-back once its write-up existed (commit `1b8b367`). Solo work on a staff-provided starter scaffold (Gradle/Vue vendor files only). |
+| **BasicImageEditor ("ANDIE")** | Java desktop image editor | No live demo — GUI app, not a web app | Promoted from held-back once its write-up existed (commit `1b8b367`). 5-person team project; Newton's features: rotate/flip, block-averaging, co-built multilingual support. |
 
 ### Solo project gap
 
@@ -62,6 +59,5 @@ Separate from the portfolio site's own "decide hosting later" stance — Note-Pi
 
 - Final hosting choice for the portfolio site itself.
 - Custom domain.
-- ProductCatalouge and BasicImageEditor polish + potential later inclusion.
-- A solo/independent project to strengthen the "independent initiative" signal.
-- Resume PDF — to be produced/finalized during content collection.
+- A solo/independent project to strengthen the "independent initiative" signal (ProductCatalouge is solo work, but coursework-scaffolded rather than fully independent).
+- Fresh-Flat's live demo URL going stale once ticket 13's Vercel/database migration lands — the URL in this file and in `src/content/projects/fresh-flat.md` will need updating then.

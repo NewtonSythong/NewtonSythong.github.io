@@ -4,10 +4,14 @@
 
 **Blocked by:** None — can start immediately
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Astro project initialized with TypeScript
-- [ ] Vitest configured and runnable via `npm test`
-- [ ] A base `Layout` component exists providing the shared page shell (head/meta, nav placeholder, main content slot) that every section/page will render inside
-- [ ] `npm run dev` serves the site locally without errors
-- [ ] `npm run build` succeeds on the empty scaffold
+- [x] Astro project initialized with TypeScript
+- [x] Vitest configured and runnable via `npm test`
+- [x] A base `Layout` component exists providing the shared page shell (head/meta, nav placeholder, main content slot) that every section/page will render inside
+- [x] `npm run dev` serves the site locally without errors
+- [x] `npm run build` succeeds on the empty scaffold
+
+## Comments
+
+Verified against the repo on 2026-08-28: `astro.config.mjs`/`tsconfig.json` present, `package.json` has `dev`/`build`/`test` scripts, `src/layouts/Layout.astro` provides the shared shell. `npm test` (22/22) and a full build both pass as of this verification pass — closing out this and tickets 02–10 together after confirming each against the current codebase.

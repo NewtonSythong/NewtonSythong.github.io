@@ -4,9 +4,13 @@
 
 **Blocked by:** 02, 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Experience section renders entries from the `experience` collection (using fixture/placeholder entries at this stage)
-- [ ] Reachable via an anchor (`#experience`)
-- [ ] Visually correct in both light and dark theme states
-- [ ] Adding a new valid `experience` entry causes it to appear in the rendered list without further code changes
+- [x] Experience section renders entries from the `experience` collection (using fixture/placeholder entries at this stage)
+- [x] Reachable via an anchor (`#experience`)
+- [x] Visually correct in both light and dark theme states
+- [x] Adding a new valid `experience` entry causes it to appear in the rendered list without further code changes
+
+## Comments
+
+Verified: `src/components/Experience.astro` renders `getCollection("experience")` with no per-entry hardcoding, sorted by `startDate`. Now populated with Newton's three real roles (ticket 10) instead of fixtures.
