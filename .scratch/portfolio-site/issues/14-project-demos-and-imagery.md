@@ -16,7 +16,7 @@ The two projects need different treatments, because only one of them is a web ap
 - [x] Seed data written (9 products, 3 categories, a `demo`/`demo1234` account) so the deployed catalogue isn't empty
 - [x] Verified by running the packaged app from a replica of the container's directory layout
 - [x] `projects` collection accepts an optional `image` with a **required** `alt`, rendered as a 16:9 card thumbnail and an uncropped hero on detail pages
-- [ ] ProductCatalouge deployed to a free JVM host, and its `liveDemoUrl` + `CONTEXT.md` row updated
+- [x] ProductCatalouge deployed to a free JVM host, and its `liveDemoUrl` + `CONTEXT.md` row updated
 - [ ] ANDIE screen capture recorded and added as its project image
 - [ ] Screenshots captured for Fresh-Flat, Note-Pilot and ProductCatalouge
 
