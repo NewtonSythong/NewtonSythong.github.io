@@ -27,6 +27,22 @@ export const projectSchema = z
 		// convention that could be forgotten later.
 		contribution: z.string(),
 		liveDemoUrl: z.url().optional(),
+		// A screenshot or capture of the project running. Optional, because
+		// not every project has one yet — but `alt` is required whenever
+		// `src` is, for the same reason `contribution` is required: a
+		// decorative-only alt is a decision, not a default, and an image
+		// added in a hurry should not silently ship without one.
+		//
+		// `src` is a path under public/, e.g. "/images/projects/andie.gif",
+		// rather than an imported asset — these are captures dropped in by
+		// hand, and keeping them out of the build pipeline means adding one
+		// is a file copy plus a front-matter line.
+		image: z
+			.object({
+				src: z.string().startsWith("/", "must be a root-relative path under public/"),
+				alt: z.string().min(1),
+			})
+			.optional(),
 		status: z.enum(["featured", "held-back"]).default("featured"),
 	})
 	.refine((project) => project.contribution.trim() !== project.description.trim(), {

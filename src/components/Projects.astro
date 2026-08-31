@@ -15,6 +15,11 @@ const featured = allProjects.filter((project) => project.data.status === "featur
 		{
 			featured.map((project) => (
 				<li>
+					{project.data.image && (
+						<a class="thumb" href={`/projects/${project.data.slug}`} tabindex="-1" aria-hidden="true">
+							<img src={project.data.image.src} alt="" loading="lazy" decoding="async" />
+						</a>
+					)}
 					<h3>
 						<a href={`/projects/${project.data.slug}`}>{project.data.name}</a>
 					</h3>
@@ -63,6 +68,23 @@ const featured = allProjects.filter((project) => project.data.status === "featur
 
 	h3 a {
 		color: inherit;
+	}
+
+	/* The card's heading link already names the project, so the thumbnail is
+	   redundant to a screen reader — hidden from the accessibility tree and
+	   taken out of the tab order rather than given a duplicate label. */
+	.thumb {
+		display: block;
+		margin-bottom: 0.75rem;
+	}
+
+	.thumb img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+		border-radius: 0.375rem;
 	}
 
 	.contribution {

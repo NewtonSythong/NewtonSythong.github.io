@@ -45,6 +45,43 @@ describe("projectSchema", () => {
 		expect(result.success).toBe(true);
 	});
 
+	it("accepts an entry with no image", () => {
+		const result = projectSchema.safeParse(validProject);
+		expect(result.success).toBe(true);
+	});
+
+	it("accepts an image with both `src` and `alt`", () => {
+		const result = projectSchema.safeParse({
+			...validProject,
+			image: { src: "/images/projects/fresh-flat.png", alt: "The pantry view" },
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it("rejects an image with `src` but no `alt`", () => {
+		const result = projectSchema.safeParse({
+			...validProject,
+			image: { src: "/images/projects/fresh-flat.png" },
+		});
+		expect(result.success).toBe(false);
+	});
+
+	it("rejects an image with an empty `alt`", () => {
+		const result = projectSchema.safeParse({
+			...validProject,
+			image: { src: "/images/projects/fresh-flat.png", alt: "" },
+		});
+		expect(result.success).toBe(false);
+	});
+
+	it("rejects an image `src` that isn't a root-relative public/ path", () => {
+		const result = projectSchema.safeParse({
+			...validProject,
+			image: { src: "images/projects/fresh-flat.png", alt: "The pantry view" },
+		});
+		expect(result.success).toBe(false);
+	});
+
 	it("rejects an entry missing `contribution`", () => {
 		const { contribution: _contribution, ...withoutContribution } =
 			validProject;
