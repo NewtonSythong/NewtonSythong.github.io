@@ -37,7 +37,7 @@ All of Newton's current public repos are University of Otago team coursework —
 
 | Project | Stack | Status | Notes |
 |---|---|---|---|
-| **Fresh-Flat** | Next.js + Supabase + OpenRouter | Live demo `fresh-flat.vercel.app` pending migration (ticket 13) | README rewritten (ticket 12). Recipe generation moved from OpenAI to OpenRouter's free tier on 2026-08-31 after the original OpenAI key proved revoked. Newton's contributions: flat/invite CRUD API, join/leave-flat features. |
+| **Fresh-Flat** | Next.js + Supabase + OpenRouter | Live: `fresh-flat-psi.vercel.app` | Migrated to Newton's own Vercel account (ticket 13); the original `fresh-flat.vercel.app` is on an account he doesn't control and is now dead. Reuses the original Supabase database. Recipe generation moved from OpenAI to OpenRouter's free tier after the original OpenAI key proved revoked. README rewritten (ticket 12). Newton's contributions: flat/invite CRUD API, join/leave-flat features. |
 | **Note-Pilot** | Next.js 15 + Prisma 6, AI study/notes tool | Deployed: `note-pilot-sage.vercel.app` | Most technically sophisticated repo, most recent activity. Redeployed under ticket 11 with a Newton-administered Neon database. |
 | **ProductCatalouge** | Java/Jooby + Vue e-commerce app | No live demo, localhost-only | Promoted from held-back once its write-up existed (commit `1b8b367`). Solo work on a staff-provided starter scaffold (Gradle/Vue vendor files only). |
 | **BasicImageEditor ("ANDIE")** | Java desktop image editor | No live demo — GUI app, not a web app | Promoted from held-back once its write-up existed (commit `1b8b367`). 5-person team project; Newton's features: rotate/flip, block-averaging, co-built multilingual support. |
@@ -60,4 +60,4 @@ Separate from the portfolio site's own "decide hosting later" stance — Note-Pi
 - Final hosting choice for the portfolio site itself.
 - Custom domain.
 - A solo/independent project to strengthen the "independent initiative" signal (ProductCatalouge is solo work, but coursework-scaffolded rather than fully independent).
-- Fresh-Flat's live demo URL going stale once ticket 13's Vercel/database migration lands — the URL in this file and in `src/content/projects/fresh-flat.md` will need updating then.
+- Fresh-Flat's database still lives on a Supabase project Newton doesn't own. Ticket 13 confirmed it works and chose to reuse it, so the demo is only as durable as that regained access. `supabase/migrations/20260826160000_initial_schema.sql` in the Fresh-Flat repo plus a row dump is the escape hatch if it ever lapses.

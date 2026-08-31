@@ -4,15 +4,15 @@
 
 **Blocked by:** None — separate repo, independent of the portfolio site build.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Decide the database path: **reuse the original Supabase project** — access regained and tested working on 2026-08-31 (see comment). The fresh-provisioning branch and its reconstructed schema are no longer needed for this ticket.
-- [ ] If reusing: confirm the original project actually works end-to-end before relying on it — *data layer confirmed (6/6 tables, 106 rows, both embedded selects resolve, GoTrue up, both API keys accepted); the app-level flow (signup → flat → ingredient → recipe) is still unexercised*
-- [ ] If fresh: apply `supabase/migrations/20260826160000_initial_schema.sql` against a new project
-- [ ] Fresh-Flat imported into a Vercel project Newton administers (not a redeploy of the existing one — that account isn't his)
+- [x] If reusing: confirm the original project actually works end-to-end before relying on it — data layer probed 2026-08-31 (6/6 tables, 106 rows, both embedded selects resolve, GoTrue up, both keys accepted), and the full app flow confirmed against the live deployment.
+- [x] ~~If fresh: apply the reconstructed schema~~ — not needed; the reuse path was taken. The migration file stays in the Fresh-Flat repo as the escape hatch if the borrowed database ever lapses.
+- [x] Fresh-Flat imported into a Vercel project Newton administers — live at **https://fresh-flat-psi.vercel.app**
 - [x] ~~`OPENAI_API_KEY` confirmed valid~~ — **resolved by removing the dependency**: the app no longer calls OpenAI. The original key turned out to be revoked (401 `invalid_api_key`) and a replacement had no credits (429), so recipe generation was ported to OpenRouter's free tier. The app now needs `OPENROUTER_API_KEY` instead — see the 2026-08-31 AI-provider comment.
-- [ ] New live URL confirmed working end-to-end: sign up/sign in, create a flat, add a pantry ingredient, generate an AI recipe, save it
-- [ ] This repo's README and NewtonProfile's `src/content/projects/fresh-flat.md` (`liveDemoUrl`) updated to the new URL — the old `fresh-flat.vercel.app` link goes stale the moment this migration happens
+- [x] New live URL confirmed working end-to-end: sign up/sign in, create a flat, add a pantry ingredient, generate an AI recipe, save it
+- [x] This repo's README and NewtonProfile's `src/content/projects/fresh-flat.md` (`liveDemoUrl`) updated to the new URL, along with `CONTEXT.md`'s project table
 
 ## Comments
 
@@ -66,3 +66,11 @@ Also set `maxDuration = 60` on the recipe route: Vercel's 10s default would kill
 Net effect on this ticket: the wizard collects `OPENROUTER_API_KEY` instead of `OPENAI_API_KEY`, and that is the variable to set in Vercel. Newton's existing OpenRouter key (the one Note-Pilot uses) is already in Fresh-Flat's `.env` and works. The now-unused `OPENAI_API_KEY` was left in `.env` deliberately; nothing reads it.
 
 Still unverified end-to-end: the deployed signup → flat → ingredient → recipe flow, which only the live Vercel deployment can exercise.
+
+### 2026-08-31 — resolved
+
+Live at **https://fresh-flat-psi.vercel.app** (HTTP 200), on a Vercel project Newton administers, with the full flow verified by hand: signup, flat creation, pantry ingredient, AI recipe generation, save.
+
+Getting there needed one step this ticket had not anticipated. The port to OpenRouter was committed locally but never pushed, and a Vercel import builds from GitHub — so the first deployment attempts kept rebuilding the old OpenAI code and failing with the same 401. Two further traps in the same area: Vercel's "Redeploy" re-uses the deployment's original commit rather than the latest, and the Next.js app lives in the repo's `FreshFlat/` subdirectory, so the import needs its Root Directory set accordingly. The fix was push, fresh import, correct root directory, four env vars.
+
+The database question stays as decided: the app still reads the original Supabase project, which Newton does not own. That is a knowingly accepted dependency, not an oversight — see the reuse decision above. The escape hatch is unchanged.
