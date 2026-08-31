@@ -37,7 +37,7 @@ All of Newton's current public repos are University of Otago team coursework —
 
 | Project | Stack | Status | Notes |
 |---|---|---|---|
-| **Fresh-Flat** | Next.js + Supabase | Live demo working: `fresh-flat.vercel.app` | README needs a public-facing rewrite (currently links to Otago-only SharePoint docs). Newton's contributions: flat/invite CRUD API, join/leave-flat features. |
+| **Fresh-Flat** | Next.js + Supabase + OpenRouter | Live demo `fresh-flat.vercel.app` pending migration (ticket 13) | README rewritten (ticket 12). Recipe generation moved from OpenAI to OpenRouter's free tier on 2026-08-31 after the original OpenAI key proved revoked. Newton's contributions: flat/invite CRUD API, join/leave-flat features. |
 | **Note-Pilot** | Next.js 15 + Prisma 6, AI study/notes tool | Deployed: `note-pilot-sage.vercel.app` | Most technically sophisticated repo, most recent activity. Redeployed under ticket 11 with a Newton-administered Neon database. |
 | **ProductCatalouge** | Java/Jooby + Vue e-commerce app | No live demo, localhost-only | Promoted from held-back once its write-up existed (commit `1b8b367`). Solo work on a staff-provided starter scaffold (Gradle/Vue vendor files only). |
 | **BasicImageEditor ("ANDIE")** | Java desktop image editor | No live demo — GUI app, not a web app | Promoted from held-back once its write-up existed (commit `1b8b367`). 5-person team project; Newton's features: rotate/flip, block-averaging, co-built multilingual support. |
@@ -53,7 +53,7 @@ Separate from the portfolio site's own "decide hosting later" stance — Note-Pi
 - **Target host:** Vercel.
 - **Database:** New Postgres instance on **Neon**, administered by Newton (originally built/tested against Supabase, but Neon was chosen for the new instance — same `url`/`directUrl` schema shape, so no code changes needed; generous free tier, no card required; first-party Vercel integration auto-populates env vars).
 - **Migrations:** No `prisma/migrations` folder exists yet in the repo. Needs an initial `prisma migrate dev --name init` run against the new DB before `migrate deploy` will work.
-- **Other required env vars:** An OpenRouter API key (used as `NVIDIA_AI_API`) for the AI chat/study-guide features — free-tier model (`nvidia/nemotron-nano-9b-v2:free`), but a key must still be provisioned. No AWS/S3 credentials needed despite the SDK being listed as a dependency (unused in the live code paths checked).
+- **Other required env vars:** An OpenRouter API key (used as `NVIDIA_AI_API`) for the AI chat/study-guide features — free-tier model (`nvidia/nemotron-3.5-lightning:free` — the code's actual model, corrected 2026-08-31), but a key must still be provisioned. No AWS/S3 credentials needed despite the SDK being listed as a dependency (unused in the live code paths checked).
 
 ## Open / deferred (not launch blockers)
 

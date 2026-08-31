@@ -10,7 +10,7 @@
 - [ ] If reusing: confirm the original project actually works end-to-end before relying on it — *data layer confirmed (6/6 tables, 106 rows, both embedded selects resolve, GoTrue up, both API keys accepted); the app-level flow (signup → flat → ingredient → recipe) is still unexercised*
 - [ ] If fresh: apply `supabase/migrations/20260826160000_initial_schema.sql` against a new project
 - [ ] Fresh-Flat imported into a Vercel project Newton administers (not a redeploy of the existing one — that account isn't his)
-- [ ] `OPENAI_API_KEY` confirmed valid — *the key in `.env` is live (`GET /v1/models` → 200), but a models listing cannot reveal which account it bills, so the "is it the teammate's?" half is still open*
+- [x] ~~`OPENAI_API_KEY` confirmed valid~~ — **resolved by removing the dependency**: the app no longer calls OpenAI. The original key turned out to be revoked (401 `invalid_api_key`) and a replacement had no credits (429), so recipe generation was ported to OpenRouter's free tier. The app now needs `OPENROUTER_API_KEY` instead — see the 2026-08-31 AI-provider comment.
 - [ ] New live URL confirmed working end-to-end: sign up/sign in, create a flat, add a pantry ingredient, generate an AI recipe, save it
 - [ ] This repo's README and NewtonProfile's `src/content/projects/fresh-flat.md` (`liveDemoUrl`) updated to the new URL — the old `fresh-flat.vercel.app` link goes stale the moment this migration happens
 
@@ -48,3 +48,21 @@ Remaining work is all Newton's, in his own terminal:
 3. At "Paste the Project URL", **type `https://yxdvcdnculnlitjnzdlf.supabase.co` in full** — do NOT press Enter to accept the current value, which is the malformed `/rest/v1/` one described above.
 4. The anon key, service_role key and OpenAI key already in `.env` are all confirmed good — Enter accepts those safely.
 5. Import into Vercel under his own account, verify the flow, then bring the new URL back so the three references can be updated together.
+
+### 2026-08-31 — recipe generation moved off OpenAI (Fresh-Flat `4eea2b0`)
+
+A first wizard run surfaced two problems the database probe hadn't touched.
+
+**The OpenAI dependency was dead.** Recipe generation returned `401 invalid_api_key` for the key the running app held — consistent with the suspicion recorded above that it belonged to the same inaccessible teammate account as the Vercel project. The replacement key Newton supplied was genuinely valid but its account had no credits, so generation returned `429 credit_balance_exhausted` instead. Either way the feature was unusable.
+
+Newton's call was to move to a free provider rather than fund OpenAI, matching Note-Pilot. That is not an env-var swap: `model/recipe.js` used OpenAI's **Responses API** with `strict: true` structured outputs, and OpenRouter only implements Chat Completions. The port rewrites the call and, because free models won't reliably honour a JSON schema, parses defensively — first balanced JSON object, markdown fences tolerated, instructions accepted as an array of steps, `"15 minutes"` coerced to `15` — then re-stringifies the normalised object so the bare `JSON.parse` in `app/(protected)/recipe/create/page.js` cannot fail.
+
+**Model choice turned out to matter more than provider choice.** Copying Note-Pilot's `nvidia/nemotron-3.5-lightning:free` verbatim failed: it is a *reasoning* model, streaming chain-of-thought into `message.content` and hitting `finish_reason: length` before emitting any JSON. Measured 170s and 242s per call, returning nothing parseable. Note-Pilot is unaffected because it renders that prose directly. The default is now a chain of two non-reasoning models, measured at 3.3–10.6s over four consecutive runs through the real code path, overridable via `RECIPE_MODELS`. A fallback chain rather than one model because free-tier providers return 429 unpredictably — two benchmark candidates did exactly that.
+
+Also set `maxDuration = 60` on the recipe route: Vercel's 10s default would kill a generation that lands in a provider queue.
+
+**The wizard's Supabase URL prompt was corrupting real runs** and is now hardened. The value it captured had a literal `0x16` control character prepended — in Git Bash, Ctrl-V inserts a control byte rather than pasting — plus a trailing `/rest/v1/` copied from the dashboard's REST endpoint field, which `createClient()` appends itself, making every query 404. The wizard now strips both, so this cannot recur regardless of how the URL is pasted.
+
+Net effect on this ticket: the wizard collects `OPENROUTER_API_KEY` instead of `OPENAI_API_KEY`, and that is the variable to set in Vercel. Newton's existing OpenRouter key (the one Note-Pilot uses) is already in Fresh-Flat's `.env` and works. The now-unused `OPENAI_API_KEY` was left in `.env` deliberately; nothing reads it.
+
+Still unverified end-to-end: the deployed signup → flat → ingredient → recipe flow, which only the live Vercel deployment can exercise.
