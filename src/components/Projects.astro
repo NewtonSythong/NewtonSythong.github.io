@@ -17,7 +17,14 @@ const featured = allProjects.filter((project) => project.data.status === "featur
 				<li class="card">
 					{project.data.image && (
 						<a class="thumb" href={`/projects/${project.data.slug}`} tabindex="-1" aria-hidden="true">
-							<img src={project.data.image.src} alt="" loading="lazy" decoding="async" />
+							<img
+								src={project.data.image.src}
+								alt=""
+								width={project.data.image.width}
+								height={project.data.image.height}
+								loading="lazy"
+								decoding="async"
+							/>
 						</a>
 					)}
 					<h3>

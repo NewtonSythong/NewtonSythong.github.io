@@ -27,6 +27,8 @@ const { Content } = await render(project);
 					class="hero"
 					src={project.data.image.src}
 					alt={project.data.image.alt}
+					width={project.data.image.width}
+					height={project.data.image.height}
 					decoding="async"
 				/>
 			)
@@ -59,7 +61,14 @@ const { Content } = await render(project);
 					<ul>
 						{project.data.gallery.map((shot) => (
 							<li>
-								<img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+								<img
+									src={shot.src}
+									alt={shot.alt}
+									width={shot.width}
+									height={shot.height}
+									loading="lazy"
+									decoding="async"
+								/>
 							</li>
 						))}
 					</ul>
