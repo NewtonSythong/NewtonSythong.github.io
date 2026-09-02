@@ -1,0 +1,62 @@
+# Builds the site and publishes it to GitHub Pages on every push to master.
+#
+# The build job runs the test suite and the post-build route check before the
+# artifact is uploaded, so a red test or a project page that failed to
+# generate stops the deploy instead of replacing a working site with a broken
+# one.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  # Lets a deploy be re-run from the Actions tab without an empty commit.
+  workflow_dispatch:
+
+# Read-only on the repo; the write scopes are the ones Pages itself needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. Queued rather than cancelled, so an in-flight publish
+# is never interrupted half-written.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # `npm ci` rather than `npm install`: it installs exactly what
+      # package-lock.json pins, so CI can't quietly pull a different version
+      # than the one that was tested locally.
+      - run: npm ci
+
+      - run: npm test
+
+      # Builds, then verifies every featured project produced its route.
+      - run: npm run verify:build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
