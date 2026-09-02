@@ -1,0 +1,452 @@
+/*
+ * Site-wide design tokens and shared section furniture.
+ *
+ * This file exists because Astro <style> blocks are component-scoped: five
+ * sections were each redeclaring the same padding/width/heading rules, so a
+ * spacing change meant five edits. Anything shared by more than one
+ * component belongs here; anything genuinely local stays in that
+ * component's scoped block.
+ *
+ * Colours are stored as bare HSL channels (`214 88% 58%`) rather than as
+ * finished colours, so a token can be reused at partial opacity via
+ * `hsl(var(--accent-hsl) / 0.15)` without needing a second variable for
+ * every tint. The `--color-*` names are the finished colours built from
+ * them, and are what the rest of the site should reference.
+ */
+
+:root {
+	color-scheme: light;
+
+	--bg-hsl: 215 40% 98%;
+	--text-hsl: 218 45% 11%;
+	--muted-hsl: 216 24% 37%;
+	--accent-hsl: 222 76% 42%;
+	--border-hsl: 216 30% 86%;
+	--surface-hsl: 0 0% 100%;
+
+	/* The ambient backdrop reads as a faint wash in light mode and as real
+	   depth in dark mode, so its colours and strength are separate tokens
+	   rather than one set dimmed by opacity — a light-mode navy blob at
+	   dark-mode opacity just looks like a smudge. */
+	--glow-one: 218 90% 72%;
+	--glow-two: 228 82% 66%;
+	--glow-opacity: 0.16;
+	--grid-opacity: 0.55;
+
+	--font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+	--font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+	--content-width: 46rem;
+	--section-gap: clamp(4rem, 9vw, 7rem);
+	--radius: 0.625rem;
+	--ease: cubic-bezier(0.22, 0.68, 0.3, 1);
+}
+
+:root[data-theme="dark"] {
+	color-scheme: dark;
+
+	--bg-hsl: 220 52% 5%;
+	--text-hsl: 216 40% 91%;
+	--muted-hsl: 216 24% 70%;
+	--accent-hsl: 218 100% 76%;
+	--border-hsl: 218 34% 19%;
+	--surface-hsl: 220 44% 9%;
+
+	--glow-one: 224 78% 42%;
+	--glow-two: 214 84% 34%;
+	--glow-opacity: 0.42;
+	--grid-opacity: 0.7;
+}
+
+:root {
+	--color-bg: hsl(var(--bg-hsl));
+	--color-text: hsl(var(--text-hsl));
+	--color-text-muted: hsl(var(--muted-hsl));
+	--color-accent: hsl(var(--accent-hsl));
+	--color-border: hsl(var(--border-hsl));
+	--color-surface: hsl(var(--surface-hsl));
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+	/* Anchor targets would otherwise land underneath the sticky header. */
+	scroll-padding-top: 5rem;
+}
+
+body {
+	margin: 0;
+	background-color: var(--color-bg);
+	color: var(--color-text);
+	font-family: var(--font-sans);
+	line-height: 1.65;
+	-webkit-font-smoothing: antialiased;
+}
+
+p {
+	color: var(--color-text-muted);
+}
+
+a {
+	color: var(--color-accent);
+	text-underline-offset: 0.2em;
+}
+
+/* --- Ambient backdrop ---------------------------------------------------
+ * Two slowly drifting blurred fields plus a masked grid, pinned behind the
+ * content. Fixed rather than scrolled, so it behaves as a background the
+ * page moves across, and `z-index: -1` keeps it out of every stacking
+ * decision the sections make.
+ */
+
+.backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.backdrop-glow {
+	position: absolute;
+	width: 52vw;
+	height: 52vw;
+	min-width: 22rem;
+	min-height: 22rem;
+	border-radius: 50%;
+	filter: blur(90px);
+	opacity: var(--glow-opacity);
+	animation: glow-drift 24s ease-in-out infinite alternate;
+}
+
+.backdrop-glow-one {
+	top: -16vw;
+	left: -10vw;
+	background: hsl(var(--glow-one));
+}
+
+.backdrop-glow-two {
+	right: -12vw;
+	bottom: -20vw;
+	background: hsl(var(--glow-two));
+	animation-delay: -12s;
+}
+
+.backdrop-grid {
+	position: absolute;
+	inset: 0;
+	opacity: var(--grid-opacity);
+	background-image:
+		linear-gradient(hsl(var(--border-hsl) / 0.6) 1px, transparent 1px),
+		linear-gradient(90deg, hsl(var(--border-hsl) / 0.6) 1px, transparent 1px);
+	background-size: 68px 68px;
+	/* Fades the grid out well before the footer, so it reads as texture at
+	   the top of the page rather than as a wireframe over everything. */
+	mask-image: radial-gradient(ellipse 90% 55% at 50% -5%, #000 15%, transparent 78%);
+}
+
+@keyframes glow-drift {
+	to {
+		transform: translate(7%, 5%) scale(1.14);
+	}
+}
+
+/* --- Site header --------------------------------------------------------- */
+
+.site-header {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background: hsl(var(--bg-hsl) / 0.72);
+	backdrop-filter: blur(12px);
+	border-bottom: 1px solid transparent;
+	transition: border-color 0.3s var(--ease);
+}
+
+.site-header[data-scrolled] {
+	border-bottom-color: var(--color-border);
+}
+
+.site-nav {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1rem;
+	max-width: var(--content-width);
+	margin-inline: auto;
+	padding: 0.9rem 1.5rem;
+}
+
+.site-nav ul {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.25rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-family: var(--font-mono);
+	font-size: 0.85rem;
+}
+
+.site-nav a {
+	position: relative;
+	color: var(--color-text-muted);
+	text-decoration: none;
+	transition: color 0.25s var(--ease);
+}
+
+/* The underline grows from the left on hover rather than appearing all at
+   once — cheap to run (transform only), and it gives the nav the same sense
+   of direction as the scroll reveals below. */
+.site-nav a::after {
+	content: "";
+	position: absolute;
+	inset-inline: 0;
+	bottom: -0.3rem;
+	height: 1px;
+	background: var(--color-accent);
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 0.28s var(--ease);
+}
+
+.site-nav a:hover,
+.site-nav a:focus-visible {
+	color: var(--color-text);
+}
+
+.site-nav a:hover::after,
+.site-nav a:focus-visible::after {
+	transform: scaleX(1);
+}
+
+#theme-toggle {
+	margin-inline-start: auto;
+	background: none;
+	border: 1px solid var(--color-border);
+	color: var(--color-text-muted);
+	border-radius: 999px;
+	padding: 0.3rem 0.85rem;
+	font: inherit;
+	font-family: var(--font-mono);
+	font-size: 0.8rem;
+	cursor: pointer;
+	transition:
+		border-color 0.25s var(--ease),
+		color 0.25s var(--ease),
+		background-color 0.25s var(--ease);
+}
+
+#theme-toggle:hover,
+#theme-toggle:focus-visible {
+	color: var(--color-accent);
+	border-color: var(--color-accent);
+	background-color: hsl(var(--accent-hsl) / 0.08);
+}
+
+/* --- Sections ------------------------------------------------------------ */
+
+main {
+	counter-reset: section;
+}
+
+main > section,
+main > article {
+	max-width: var(--content-width);
+	margin-inline: auto;
+	padding: var(--section-gap) 1.5rem 0;
+}
+
+main > :last-child {
+	padding-bottom: var(--section-gap);
+}
+
+/* Numbered headings trailed by a rule, after the brittanychiang.com
+   reference already named in CONTEXT.md. The number comes from a CSS
+   counter rather than from markup, so reordering the sections in
+   index.astro renumbers them with no further edits. */
+main > section > h2,
+main > article > h1 {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	margin: 0 0 1.5rem;
+	font-family: var(--font-mono);
+	font-size: clamp(1.3rem, 1rem + 1.4vw, 1.7rem);
+	font-weight: 600;
+	letter-spacing: -0.015em;
+	color: var(--color-text);
+}
+
+main > section > h2 {
+	counter-increment: section;
+}
+
+main > section > h2::before {
+	content: counter(section, decimal-leading-zero) ".";
+	color: var(--color-accent);
+	font-size: 0.82em;
+	font-weight: 400;
+}
+
+main > section > h2::after,
+main > article > h1::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: linear-gradient(90deg, var(--color-border), transparent);
+}
+
+/* --- Tag pills ----------------------------------------------------------- */
+/* Shared by Skills, Experience, Projects and the project detail page, which
+   between them previously carried four near-identical copies of these
+   rules. */
+
+.tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-family: var(--font-mono);
+	font-size: 0.78rem;
+}
+
+.tags li {
+	padding: 0.2rem 0.7rem;
+	border: 1px solid var(--color-border);
+	border-radius: 999px;
+	color: var(--color-text-muted);
+	background-color: hsl(var(--surface-hsl) / 0.6);
+	transition:
+		color 0.25s var(--ease),
+		border-color 0.25s var(--ease),
+		background-color 0.25s var(--ease);
+}
+
+@media (hover: hover) {
+	.tags li:hover {
+		color: var(--color-accent);
+		border-color: hsl(var(--accent-hsl) / 0.55);
+		background-color: hsl(var(--accent-hsl) / 0.1);
+	}
+}
+
+/* --- Cards --------------------------------------------------------------- */
+
+.card {
+	padding: 1.35rem 1.5rem;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius);
+	background-color: hsl(var(--surface-hsl) / 0.72);
+	transition:
+		transform 0.3s var(--ease),
+		border-color 0.3s var(--ease),
+		box-shadow 0.3s var(--ease);
+}
+
+/* Cards set spacing on their children rather than relying on collapsing
+   margins (padding blocks the collapse), so the last child clears its own
+   trailing margin to keep the bottom padding even. */
+.card > :last-child {
+	margin-bottom: 0;
+}
+
+/* A lift rather than the reference's `scale(1.02)`: scaling a card resamples
+   its text and thumbnail every frame, which shimmers on non-retina displays.
+   Translating does not, and reads as the same gesture. */
+@media (hover: hover) {
+	.card:hover {
+		transform: translateY(-3px);
+		border-color: hsl(var(--accent-hsl) / 0.5);
+		box-shadow: 0 14px 30px -18px hsl(var(--accent-hsl) / 0.55);
+	}
+}
+
+/* --- Scroll reveals ------------------------------------------------------
+ * Every top-level section starts hidden and is revealed once it scrolls
+ * into view. Two details keep this from degrading badly:
+ *
+ * 1. The whole block is gated on `.js`, set synchronously by an inline
+ *    script in <head>. With JavaScript unavailable the rules never match at
+ *    all, so the page renders plainly rather than sitting at opacity 0
+ *    forever with no observer coming to rescue it.
+ * 2. The hidden state is keyed off the element selector, not off a class
+ *    that JavaScript adds. A deferred script adding `.reveal` would let the
+ *    content paint first and then blink out; matching from first paint
+ *    cannot.
+ */
+
+.js :is(main > section, main > article) {
+	opacity: 0;
+	transform: translateY(20px);
+	transition:
+		opacity 0.7s var(--ease),
+		transform 0.7s var(--ease);
+}
+
+.js :is(main > section, main > article)[data-visible] {
+	opacity: 1;
+	transform: none;
+}
+
+/* Direct list children stagger in behind their section. The depth is
+   limited to `> ul > li` / `> ol > li` so that tag pills nested inside a
+   project card ride in with the card rather than animating a second time. */
+.js :is(main > section, main > article) > :is(ul, ol) > li {
+	opacity: 0;
+	transform: translateY(14px);
+	transition:
+		opacity 0.55s var(--ease),
+		transform 0.55s var(--ease);
+}
+
+.js :is(main > section, main > article)[data-visible] > :is(ul, ol) > li {
+	opacity: 1;
+	transform: none;
+}
+
+.js [data-visible] > :is(ul, ol) > li:nth-child(1) { transition-delay: 0.08s; }
+.js [data-visible] > :is(ul, ol) > li:nth-child(2) { transition-delay: 0.14s; }
+.js [data-visible] > :is(ul, ol) > li:nth-child(3) { transition-delay: 0.2s; }
+.js [data-visible] > :is(ul, ol) > li:nth-child(4) { transition-delay: 0.26s; }
+.js [data-visible] > :is(ul, ol) > li:nth-child(5) { transition-delay: 0.32s; }
+/* Past the fifth the delay is capped: a long Skills list should not take
+   four seconds to finish arriving. */
+.js [data-visible] > :is(ul, ol) > li:nth-child(n + 6) { transition-delay: 0.38s; }
+
+:where(a, button):focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 3px;
+	border-radius: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	.backdrop-glow {
+		animation: none;
+	}
+
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+	}
+
+	.js :is(main > section, main > article),
+	.js :is(main > section, main > article) > :is(ul, ol) > li {
+		opacity: 1;
+		transform: none;
+	}
+}

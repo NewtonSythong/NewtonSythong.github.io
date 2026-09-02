@@ -1,4 +1,6 @@
 ---
+import "../styles/global.css";
+
 interface Props {
 	title?: string;
 	description?: string;
@@ -9,12 +11,18 @@ const {
 	description = "Portfolio of Newton Sythong — projects, experience, and skills.",
 } = Astro.props;
 
+// Root-relative rather than bare `#about` fragments. The sections only exist
+// on the home page, so a bare fragment does nothing at all on a
+// /projects/[slug] page — it sets the hash and finds no target. Prefixing with
+// `/` makes the link navigate home and then scroll, while on the home page
+// itself the browser still treats it as a same-document fragment jump, so
+// smooth scrolling is unaffected.
 const navLinks = [
-	{ href: "#about", label: "About" },
-	{ href: "#experience", label: "Experience" },
-	{ href: "#skills", label: "Skills" },
-	{ href: "#projects", label: "Projects" },
-	{ href: "#contact", label: "Contact" },
+	{ href: "/#about", label: "About" },
+	{ href: "/#experience", label: "Experience" },
+	{ href: "/#skills", label: "Skills" },
+	{ href: "/#projects", label: "Projects" },
+	{ href: "/#contact", label: "Contact" },
 ];
 ---
 
@@ -27,10 +35,27 @@ const navLinks = [
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		{/*
+		  Marks the document as scripted before the first paint. The scroll
+		  reveals in global.css hide their sections only under `.js`, so a
+		  visitor without JavaScript gets the fully readable page instead of
+		  content that never fades in. This has to be inline and in <head> —
+		  the deferred module below would let the sections paint first and
+		  then blink out. It carries no logic of its own, so unlike the theme
+		  bootstrap there is nothing here worth keeping testable.
+		*/}
+		<script is:inline>
+			document.documentElement.classList.add("js");
+		</script>
 	</head>
 	<body>
-		<header>
-			<nav aria-label="Section navigation">
+		<div class="backdrop" aria-hidden="true">
+			<div class="backdrop-glow backdrop-glow-one"></div>
+			<div class="backdrop-glow backdrop-glow-two"></div>
+			<div class="backdrop-grid"></div>
+		</div>
+		<header class="site-header">
+			<nav class="site-nav" aria-label="Section navigation">
 				<ul>
 					{
 						navLinks.map((link) => (
@@ -50,37 +75,6 @@ const navLinks = [
 		</main>
 	</body>
 </html>
-
-<style>
-	:root {
-		--color-bg: #ffffff;
-		--color-text: #12131a;
-		--color-accent: #3b5bfd;
-	}
-
-	:root[data-theme="dark"] {
-		--color-bg: #0b0e17;
-		--color-text: #e6e8f0;
-		--color-accent: #7c9bff;
-	}
-
-	body {
-		margin: 0;
-		background-color: var(--color-bg);
-		color: var(--color-text);
-		font-family: system-ui, sans-serif;
-	}
-
-	#theme-toggle {
-		background: none;
-		border: 1px solid currentColor;
-		color: inherit;
-		border-radius: 999px;
-		padding: 0.25rem 0.75rem;
-		font: inherit;
-		cursor: pointer;
-	}
-</style>
 
 <script>
 	import { resolveInitialTheme, toggleTheme, type Theme } from "../lib/theme";
@@ -104,4 +98,42 @@ const navLinks = [
 		const current = (document.documentElement.dataset.theme as Theme | undefined) ?? "light";
 		applyTheme(toggleTheme(current, window.localStorage));
 	});
+
+	// The sticky header is borderless while the page sits at the top and
+	// grows a hairline rule once content scrolls beneath it, so it separates
+	// itself from the content only when there is content to separate from.
+	const header = document.querySelector(".site-header");
+
+	if (header) {
+		const syncHeader = () => header.toggleAttribute("data-scrolled", window.scrollY > 8);
+		window.addEventListener("scroll", syncHeader, { passive: true });
+		syncHeader();
+	}
+
+	// Scroll reveals. Sections are hidden by CSS (see global.css) and marked
+	// visible once they enter the viewport; the mark is never removed, so a
+	// section that has arrived stays put instead of re-animating when the
+	// visitor scrolls back up.
+	const revealTargets = document.querySelectorAll<HTMLElement>("main > section, main > article");
+
+	if (!("IntersectionObserver" in window)) {
+		// Without the API there is no way to know what is on screen, so show
+		// everything rather than leaving the page blank.
+		revealTargets.forEach((target) => target.setAttribute("data-visible", ""));
+	} else {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					entry.target.setAttribute("data-visible", "");
+					observer.unobserve(entry.target);
+				}
+			},
+			// Fires a little before the section is fully on screen, so the
+			// reveal has finished by the time the visitor is reading it.
+			{ rootMargin: "0px 0px -10% 0px", threshold: 0.05 },
+		);
+
+		revealTargets.forEach((target) => observer.observe(target));
+	}
 </script>

@@ -21,13 +21,12 @@
 </section>
 
 <style>
-	section {
-		padding: 3rem 1.5rem;
-		max-width: 40rem;
-	}
-
-	h2 {
-		font-family: monospace;
-		color: var(--color-accent);
+	/* Section width, padding and heading treatment now come from
+	   src/styles/global.css. Only the opening-paragraph emphasis is local:
+	   About is the first thing a recruiter reads, so its lead sentence gets
+	   full-strength text while the rest stays at the muted body colour. */
+	p:first-of-type {
+		font-size: 1.075rem;
+		color: var(--color-text);
 	}
 </style>
