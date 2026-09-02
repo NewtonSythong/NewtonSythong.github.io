@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-// Lightweight build verification (see .scratch/portfolio-site/spec.md's
-// Testing Decisions): after `astro build`, confirm every non-held-back
+// Lightweight build verification: after `astro build`, confirm every non-held-back
 // entry in the `projects` content collection produced its
 // /projects/[slug] route, and that no held-back entry did. This is a
 // smoke check, not a dedicated test suite — rendered markup/visual output
