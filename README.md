@@ -4,7 +4,8 @@ Personal portfolio site for Newton Sythong — job-hunting focused, built for re
 
 - **Framework:** [Astro](https://docs.astro.build) (static-first, content collections)
 - **Layout:** single-page scroll (About → Experience → Skills → Projects → Contact) plus a detail page per featured project
-- **Repo:** https://github.com/NewtonSythong/NewtonProfile (private)
+- **Repo:** https://github.com/NewtonSythong/NewtonSythong.github.io
+- **Live:** https://newtonsythong.github.io
 
 ## Setup
 
