@@ -14,13 +14,17 @@ const sorted = [...entries].sort((a, b) => b.data.startDate.localeCompare(a.data
 	<ol>
 		{
 			sorted.map((entry) => (
-				<li>
+				<li class="card">
 					<h3>
 						{entry.data.title} · {entry.data.organization}
 					</h3>
 					<p class="dates">
 						{entry.data.startDate}
-						{entry.data.endDate ? ` – ${entry.data.endDate}` : " – Present"}
+						{entry.data.endDate === entry.data.startDate
+							? ""
+							: entry.data.endDate
+								? ` – ${entry.data.endDate}`
+								: " – Present"}
 					</p>
 					<p>{entry.data.description}</p>
 					{entry.data.tags.length > 0 && (
@@ -37,42 +41,34 @@ const sorted = [...entries].sort((a, b) => b.data.startDate.localeCompare(a.data
 </section>
 
 <style>
-	section {
-		padding: 3rem 1.5rem;
-		max-width: 40rem;
-	}
-
-	h2 {
-		font-family: monospace;
-		color: var(--color-accent);
-	}
-
+	/* Section furniture, the `.card` surface and the `.tags` pills are all
+	   defined once in src/styles/global.css. What is left here is the list
+	   layout and the entry's own typography. */
 	ol {
 		list-style: none;
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
+		gap: 1rem;
+		margin: 0;
 		padding: 0;
+	}
+
+	h3 {
+		margin: 0 0 0.15rem;
+		font-size: 1.02rem;
+		font-weight: 600;
+		line-height: 1.4;
 	}
 
 	.dates {
-		font-family: monospace;
-		font-size: 0.875rem;
-		opacity: 0.75;
+		margin: 0 0 0.7rem;
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		letter-spacing: 0.02em;
+		color: var(--color-text-muted);
 	}
 
-	.tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		padding: 0;
-		list-style: none;
-		font-size: 0.8rem;
-	}
-
-	.tags li {
-		border: 1px solid currentColor;
-		border-radius: 999px;
-		padding: 0.1rem 0.6rem;
+	.card p:not(.dates) {
+		margin: 0 0 0.9rem;
 	}
 </style>

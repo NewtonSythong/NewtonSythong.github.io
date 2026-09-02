@@ -1,4 +1,6 @@
 ---
+import "../styles/global.css";
+
 interface Props {
 	title?: string;
 	description?: string;
@@ -9,12 +11,18 @@ const {
 	description = "Portfolio of Newton Sythong — projects, experience, and skills.",
 } = Astro.props;
 
+// Root-relative rather than bare `#about` fragments. The sections only exist
+// on the home page, so a bare fragment does nothing at all on a
+// /projects/[slug] page — it sets the hash and finds no target. Prefixing with
+// `/` makes the link navigate home and then scroll, while on the home page
+// itself the browser still treats it as a same-document fragment jump, so
+// smooth scrolling is unaffected.
 const navLinks = [
-	{ href: "#about", label: "About" },
-	{ href: "#experience", label: "Experience" },
-	{ href: "#skills", label: "Skills" },
-	{ href: "#projects", label: "Projects" },
-	{ href: "#contact", label: "Contact" },
+	{ href: "/#about", label: "About" },
+	{ href: "/#experience", label: "Experience" },
+	{ href: "/#skills", label: "Skills" },
+	{ href: "/#projects", label: "Projects" },
+	{ href: "/#contact", label: "Contact" },
 ];
 ---
 
@@ -27,10 +35,41 @@ const navLinks = [
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		{/*
+		  Marks the document as scripted before the first paint. The scroll
+		  reveals in global.css hide their sections only under `.js`, so a
+		  visitor without JavaScript gets the fully readable page instead of
+		  content that never fades in. This has to be inline and in <head> —
+		  the deferred module below would let the sections paint first and
+		  then blink out. It carries no logic of its own, so unlike the theme
+		  bootstrap there is nothing here worth keeping testable.
+		*/}
+		<script is:inline>
+			document.documentElement.classList.add("js");
+
+			// Failsafe. The `js` class is the only thing hiding the sections,
+			// and the script that reveals them is a deferred module that could
+			// fail to load or throw. If it has not reported for duty shortly
+			// after load, drop the class so every section is simply visible: a
+			// missing animation is a far smaller problem than a page that
+			// looks empty.
+			window.addEventListener("load", function () {
+				setTimeout(function () {
+					if (!window.__revealReady) {
+						document.documentElement.classList.remove("js");
+					}
+				}, 1000);
+			});
+		</script>
 	</head>
 	<body>
-		<header>
-			<nav aria-label="Section navigation">
+		<div class="backdrop" aria-hidden="true">
+			<div class="backdrop-glow backdrop-glow-one"></div>
+			<div class="backdrop-glow backdrop-glow-two"></div>
+			<div class="backdrop-grid"></div>
+		</div>
+		<header class="site-header">
+			<nav class="site-nav" aria-label="Section navigation">
 				<ul>
 					{
 						navLinks.map((link) => (
@@ -50,37 +89,6 @@ const navLinks = [
 		</main>
 	</body>
 </html>
-
-<style>
-	:root {
-		--color-bg: #ffffff;
-		--color-text: #12131a;
-		--color-accent: #3b5bfd;
-	}
-
-	:root[data-theme="dark"] {
-		--color-bg: #0b0e17;
-		--color-text: #e6e8f0;
-		--color-accent: #7c9bff;
-	}
-
-	body {
-		margin: 0;
-		background-color: var(--color-bg);
-		color: var(--color-text);
-		font-family: system-ui, sans-serif;
-	}
-
-	#theme-toggle {
-		background: none;
-		border: 1px solid currentColor;
-		color: inherit;
-		border-radius: 999px;
-		padding: 0.25rem 0.75rem;
-		font: inherit;
-		cursor: pointer;
-	}
-</style>
 
 <script>
 	import { resolveInitialTheme, toggleTheme, type Theme } from "../lib/theme";
@@ -104,4 +112,76 @@ const navLinks = [
 		const current = (document.documentElement.dataset.theme as Theme | undefined) ?? "light";
 		applyTheme(toggleTheme(current, window.localStorage));
 	});
+
+	// The sticky header is borderless while the page sits at the top and
+	// grows a hairline rule once content scrolls beneath it, so it separates
+	// itself from the content only when there is content to separate from.
+	const header = document.querySelector(".site-header");
+
+	if (header) {
+		const syncHeader = () => header.toggleAttribute("data-scrolled", window.scrollY > 8);
+		window.addEventListener("scroll", syncHeader, { passive: true });
+		syncHeader();
+	}
+
+	// Scroll reveals. Sections are hidden by CSS (see global.css) and marked
+	// visible once they reach the viewport; the mark is never removed, so a
+	// section that has arrived stays put rather than re-animating when the
+	// visitor scrolls back up.
+	//
+	// This is a plain geometry check on scroll rather than an
+	// IntersectionObserver. The observer version hid every section below the
+	// first one on at least one real browser, and its behaviour depends on
+	// threshold-versus-element-height interactions that are hard to reason
+	// about for sections taller than the viewport. Comparing rectangles is
+	// duller, but it is obvious what it does and it degrades toward showing
+	// content rather than hiding it.
+	// Read by the failsafe in the inline <head> script above, which reveals
+	// everything if this module never gets a chance to.
+	declare global {
+		interface Window {
+			__revealReady?: boolean;
+		}
+	}
+
+	window.__revealReady = true;
+
+	const revealTargets = Array.from(
+		document.querySelectorAll<HTMLElement>("main > section, main > article"),
+	);
+
+	function revealVisible() {
+		const trigger = window.innerHeight * 0.92;
+		let pending = 0;
+
+		for (const target of revealTargets) {
+			if (target.hasAttribute("data-visible")) continue;
+
+			const box = target.getBoundingClientRect();
+			// Anything whose top edge has reached the trigger line, or that is
+			// already straddling the viewport, counts as arrived.
+			if (box.top < trigger && box.bottom > 0) {
+				target.setAttribute("data-visible", "");
+			} else {
+				pending++;
+			}
+		}
+
+		return pending;
+	}
+
+	if (revealTargets.length > 0 && revealVisible() > 0) {
+		const onScroll = () => {
+			if (revealVisible() === 0) {
+				window.removeEventListener("scroll", onScroll);
+				window.removeEventListener("resize", onScroll);
+			}
+		};
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onScroll);
+		// Images and fonts change section heights after first paint, so
+		// re-check once everything has settled.
+		window.addEventListener("load", onScroll, { once: true });
+	}
 </script>

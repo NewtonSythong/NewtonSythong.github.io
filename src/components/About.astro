@@ -6,28 +6,111 @@
 
 <section id="about" aria-labelledby="about-heading">
 	<h2 id="about-heading">About</h2>
-	<p>
-		I'm Newton Sythong, a Software Engineering graduate from the University
-		of Otago (2025), based in Wellington, New Zealand. I build full-stack,
-		database-backed applications with a focus on secure authentication and
-		multi-user architecture.
-	</p>
-	<p>
-		I'm particularly interested in integrating LLMs — OpenAI and OpenRouter
-		— into React/Next.js and Java systems, backed by PostgreSQL and
-		relational database design. Across the stack, my focus is on reliable,
-		well-tested software.
-	</p>
+	<div class="about-body">
+		<div class="portrait-frame">
+			<img
+				class="portrait"
+				src="/images/newton-sythong.jpg"
+				alt="Newton Sythong in cap and gown at his University of Otago graduation"
+				width="528"
+				height="660"
+				loading="eager"
+				decoding="async"
+			/>
+		</div>
+		<div class="about-text">
+			<p>
+				I'm Newton Sythong, a Software Engineering graduate from the
+				University of Otago (2025), based in Wellington, New Zealand. I
+				build full-stack, database-backed applications with a focus on
+				secure authentication and multi-user architecture.
+			</p>
+			<p>
+				I'm particularly interested in integrating LLMs — OpenAI and
+				OpenRouter — into React/Next.js and Java systems, backed by
+				PostgreSQL and relational database design. Across the stack, my
+				focus is on reliable, well-tested software.
+			</p>
+		</div>
+	</div>
 </section>
 
 <style>
-	section {
-		padding: 3rem 1.5rem;
-		max-width: 40rem;
+	/* Section width, padding and heading treatment now come from
+	   src/styles/global.css. Only the opening-paragraph emphasis is local:
+	   About is the first thing a recruiter reads, so its lead sentence gets
+	   full-strength text while the rest stays at the muted body colour. */
+	.about-text p:first-of-type {
+		font-size: 1.075rem;
+		color: var(--color-text);
 	}
 
-	h2 {
-		font-family: monospace;
-		color: var(--color-accent);
+	/* Portrait beside the text rather than above it: it scrolls away with
+	   the section like any other content, so the page opens on a face
+	   without holding one in view for the whole visit. The columns stretch
+	   so the photo runs the full height of the copy next to it. */
+	.about-body {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: clamp(1.25rem, 3.5vw, 2.25rem);
+		align-items: stretch;
+	}
+
+	/* The frame, not the image, is the grid item: it takes its width from
+	   the clamp and its height from the row, so the photo grows to match the
+	   text however that text reflows. min-height keeps it a portrait rather
+	   than a letterbox if the copy is ever trimmed short, and it also
+	   reserves space before the file loads so nothing below jumps. */
+	.portrait-frame {
+		position: relative;
+		width: clamp(10rem, 24vw, 16rem);
+		min-height: 12.5rem;
+		overflow: hidden;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background-color: hsl(var(--surface-hsl) / 0.6);
+	}
+
+	/* Filling the frame means the crop is taller than the 4:5 original, so
+	   the focal point is biased upward to keep the face out of the crop. */
+	.portrait {
+		display: block;
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 28%;
+	}
+
+	/* The paragraph's own top margin would push the text down while the
+	   portrait sits flush against the top of the row, leaving the photo
+	   floating above the line it should start with. */
+	.about-text > :first-child {
+		margin-top: 0;
+	}
+
+	.about-text > :last-child {
+		margin-bottom: 0;
+	}
+
+	/* Below this the text column is too narrow to read comfortably beside
+	   the portrait, so it moves above the copy. Stacked, there is no text
+	   height to match, so the frame goes back to the natural 4:5 crop. */
+	@media (max-width: 36rem) {
+		.about-body {
+			grid-template-columns: 1fr;
+			gap: 1.25rem;
+		}
+
+		.portrait-frame {
+			width: min(60%, 12rem);
+			min-height: 0;
+			aspect-ratio: 4 / 5;
+		}
+
+		.portrait {
+			object-position: 50% 50%;
+		}
 	}
 </style>

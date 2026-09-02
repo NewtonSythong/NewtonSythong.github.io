@@ -15,6 +15,20 @@ export const experienceSchema = z.object({
 	tags: z.array(z.string()).default([]),
 });
 
+// A screenshot or capture of a project running. `alt` is required whenever
+// `src` is, for the same reason `contribution` is required below: a
+// decorative-only alt is a decision, not a default, and an image added in a
+// hurry should not silently ship without one.
+//
+// `src` is a path under public/, e.g. "/images/projects/andie.gif", rather
+// than an imported asset — these are captures dropped in by hand, and keeping
+// them out of the build pipeline means adding one is a file copy plus a
+// front-matter line.
+const projectImageSchema = z.object({
+	src: z.string().startsWith("/", "must be a root-relative path under public/"),
+	alt: z.string().min(1),
+});
+
 export const projectSchema = z
 	.object({
 		name: z.string(),
@@ -27,22 +41,15 @@ export const projectSchema = z
 		// convention that could be forgotten later.
 		contribution: z.string(),
 		liveDemoUrl: z.url().optional(),
-		// A screenshot or capture of the project running. Optional, because
-		// not every project has one yet — but `alt` is required whenever
-		// `src` is, for the same reason `contribution` is required: a
-		// decorative-only alt is a decision, not a default, and an image
-		// added in a hurry should not silently ship without one.
-		//
-		// `src` is a path under public/, e.g. "/images/projects/andie.gif",
-		// rather than an imported asset — these are captures dropped in by
-		// hand, and keeping them out of the build pipeline means adding one
-		// is a file copy plus a front-matter line.
-		image: z
-			.object({
-				src: z.string().startsWith("/", "must be a root-relative path under public/"),
-				alt: z.string().min(1),
-			})
-			.optional(),
+		// The project's single headline capture — the card thumbnail and the
+		// detail-page hero. Optional, because not every project has one yet.
+		image: projectImageSchema.optional(),
+		// Further screenshots, shown only on the project's detail page. The
+		// card and the hero deliberately stay a single image: a recruiter
+		// skimming the list should get one clear look per project, and the
+		// rest of the tour is for whoever clicks through. Defaults to empty
+		// so every existing entry stays valid without editing.
+		gallery: z.array(projectImageSchema).default([]),
 		status: z.enum(["featured", "held-back"]).default("featured"),
 	})
 	.refine((project) => project.contribution.trim() !== project.description.trim(), {

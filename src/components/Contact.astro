@@ -6,26 +6,48 @@ const email = "newtsythong@gmail.com";
 
 <section id="contact" aria-labelledby="contact-heading">
 	<h2 id="contact-heading">Contact</h2>
-	<p>
-		<a href={`mailto:${email}`}>{email}</a>
-	</p>
-	<p>
-		<a href="/resume.pdf" download>Download résumé (PDF)</a>
-	</p>
+	<div class="actions">
+		<a class="resume" href="/resume.pdf" download>Download résumé (PDF)</a>
+		<a class="email" href={`mailto:${email}`}>{email}</a>
+	</div>
 </section>
 
 <style>
-	section {
-		padding: 3rem 1.5rem;
-		max-width: 40rem;
+	/* Section furniture comes from src/styles/global.css; link colour is now
+	   the document default, so only the two calls to action are styled here.
+	   Contact is the last thing on the page and the point of the whole site,
+	   so the résumé download is given a filled button and the email a quieter
+	   monospace link beside it. */
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1.25rem;
 	}
 
-	h2 {
-		font-family: monospace;
-		color: var(--color-accent);
+	.resume {
+		padding: 0.55rem 1.2rem;
+		border: 1px solid var(--color-accent);
+		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		text-decoration: none;
+		background-color: hsl(var(--accent-hsl) / 0.1);
+		transition:
+			background-color 0.25s var(--ease),
+			box-shadow 0.25s var(--ease),
+			transform 0.25s var(--ease);
 	}
 
-	a {
-		color: var(--color-accent);
+	.resume:hover,
+	.resume:focus-visible {
+		background-color: hsl(var(--accent-hsl) / 0.2);
+		box-shadow: 0 8px 22px -12px hsl(var(--accent-hsl) / 0.9);
+		transform: translateY(-2px);
+	}
+
+	.email {
+		font-family: var(--font-mono);
+		font-size: 0.9rem;
 	}
 </style>

@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# raw screenshot originals — cropped copies live in public/images/projects/
+screenshots/
