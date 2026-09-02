@@ -50,18 +50,26 @@ describe("projectSchema", () => {
 		expect(result.success).toBe(true);
 	});
 
-	it("accepts an image with both `src` and `alt`", () => {
+	it("accepts an image with `src`, `alt` and intrinsic dimensions", () => {
 		const result = projectSchema.safeParse({
 			...validProject,
-			image: { src: "/images/projects/fresh-flat.png", alt: "The pantry view" },
+			image: { src: "/images/projects/fresh-flat.webp", alt: "The pantry view", width: 1600, height: 592 },
 		});
 		expect(result.success).toBe(true);
+	});
+
+	it("rejects an image with no intrinsic dimensions", () => {
+		const result = projectSchema.safeParse({
+			...validProject,
+			image: { src: "/images/projects/fresh-flat.webp", alt: "The pantry view" },
+		});
+		expect(result.success).toBe(false);
 	});
 
 	it("rejects an image with `src` but no `alt`", () => {
 		const result = projectSchema.safeParse({
 			...validProject,
-			image: { src: "/images/projects/fresh-flat.png" },
+			image: { src: "/images/projects/fresh-flat.webp", width: 1600, height: 592 },
 		});
 		expect(result.success).toBe(false);
 	});
@@ -69,7 +77,7 @@ describe("projectSchema", () => {
 	it("rejects an image with an empty `alt`", () => {
 		const result = projectSchema.safeParse({
 			...validProject,
-			image: { src: "/images/projects/fresh-flat.png", alt: "" },
+			image: { src: "/images/projects/fresh-flat.webp", alt: "", width: 1600, height: 592 },
 		});
 		expect(result.success).toBe(false);
 	});
@@ -77,7 +85,7 @@ describe("projectSchema", () => {
 	it("rejects an image `src` that isn't a root-relative public/ path", () => {
 		const result = projectSchema.safeParse({
 			...validProject,
-			image: { src: "images/projects/fresh-flat.png", alt: "The pantry view" },
+			image: { src: "images/projects/fresh-flat.webp", alt: "The pantry view", width: 1600, height: 592 },
 		});
 		expect(result.success).toBe(false);
 	});

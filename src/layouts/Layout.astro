@@ -17,6 +17,13 @@ const {
 // `/` makes the link navigate home and then scroll, while on the home page
 // itself the browser still treats it as a same-document fragment jump, so
 // smooth scrolling is unaffected.
+// Absolute URLs, built from `site` in astro.config.mjs. A shared link is the
+// first thing a recruiter sees of the site, so the page carries its own
+// canonical URL and Open Graph card rather than leaving LinkedIn or Slack to
+// guess at a title and scrape whatever image they find first.
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const socialImageUrl = new URL("/images/newton-sythong.webp", Astro.site);
+
 const navLinks = [
 	{ href: "/#about", label: "About" },
 	{ href: "/#experience", label: "Experience" },
@@ -35,6 +42,14 @@ const navLinks = [
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<link rel="canonical" href={canonicalUrl} />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Newton Sythong" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={socialImageUrl} />
+		<meta name="twitter:card" content="summary" />
 		{/*
 		  Marks the document as scripted before the first paint. The scroll
 		  reveals in global.css hide their sections only under `.js`, so a

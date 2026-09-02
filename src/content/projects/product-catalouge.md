@@ -6,11 +6,15 @@ description: "An e-commerce web app built for University of Otago coursework (IN
 contribution: "Built solo on a staff-provided starter scaffold (Gradle setup and Vue.js/Axios vendor files only) — the Jooby backend web service, DAOs and schema for products/cart/sales, session-based authentication, and the Vue.js cart and checkout frontend."
 liveDemoUrl: "https://productcatalouge.onrender.com"
 image:
-  src: "/images/projects/product-catalouge.png"
+  src: "/images/projects/product-catalouge.webp"
   alt: "The ProductCatalouge shopping cart listing three products with thumbnails, prices, quantities, a running total and a checkout button"
+  width: 1600
+  height: 750
 gallery:
-  - src: "/images/projects/product-catalouge-product.png"
+  - src: "/images/projects/product-catalouge-product.webp"
     alt: "A product detail page showing the item photo, category, description, price, stock level and an add-to-cart control"
+    width: 1600
+    height: 520
 ---
 
 The demo runs on a free instance that sleeps when idle, so the first load

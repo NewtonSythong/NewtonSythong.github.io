@@ -20,13 +20,20 @@ export const experienceSchema = z.object({
 // decorative-only alt is a decision, not a default, and an image added in a
 // hurry should not silently ship without one.
 //
-// `src` is a path under public/, e.g. "/images/projects/andie.gif", rather
+// `src` is a path under public/, e.g. "/images/projects/andie.webp", rather
 // than an imported asset — these are captures dropped in by hand, and keeping
 // them out of the build pipeline means adding one is a file copy plus a
 // front-matter line.
 const projectImageSchema = z.object({
 	src: z.string().startsWith("/", "must be a root-relative path under public/"),
 	alt: z.string().min(1),
+	// Intrinsic pixel dimensions, required for the same reason `alt` is: the
+	// browser can only reserve an image's space before it loads if it is told
+	// the aspect ratio, and a screenshot that arrives late and shoves the
+	// text down is a layout shift a recruiter feels. Required rather than
+	// optional so this can't be forgotten on the next image added.
+	width: z.number().int().positive(),
+	height: z.number().int().positive(),
 });
 
 export const projectSchema = z
@@ -36,9 +43,9 @@ export const projectSchema = z
 		tags: z.array(z.string()),
 		description: z.string(),
 		// Required and kept structurally distinct from `description` (see
-		// the `.refine` below) so the honest team-project framing agreed
-		// in CONTEXT.md is enforced by the schema, not just a writing
-		// convention that could be forgotten later.
+		// the `.refine` below) so the honest team-project framing is
+		// enforced by the schema, not just a writing convention that
+		// could be forgotten later.
 		contribution: z.string(),
 		liveDemoUrl: z.url().optional(),
 		// The project's single headline capture — the card thumbnail and the
