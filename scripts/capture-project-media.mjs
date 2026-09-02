@@ -40,7 +40,7 @@
 
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import readline from "node:readline/promises";
 import { fileURLToPath } from "node:url";
@@ -228,6 +228,37 @@ function convertToGif(ffmpeg, input, output) {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+ * Waits for a just-stopped recording to become readable.
+ *
+ * StopRecord reports the output path as soon as the stop *begins*, but an MP4
+ * only becomes valid once OBS writes its moov atom at the very end of the
+ * file. Handing the path straight to ffmpeg therefore loses a race and fails
+ * with "moov atom not found" on a recording that is otherwise perfectly good.
+ *
+ * Waiting on GetRecordStatus alone is not enough — the output goes inactive
+ * before the muxer has finished — so the file size has to settle too.
+ */
+async function waitForRecordingToFinalise(obs, filePath, timeoutMs = 15000) {
+	const deadline = Date.now() + timeoutMs;
+
+	while (Date.now() < deadline) {
+		const { outputActive } = await obs.request("GetRecordStatus");
+		if (!outputActive) break;
+		await sleep(100);
+	}
+
+	let previousSize = -1;
+	while (Date.now() < deadline) {
+		const size = existsSync(filePath) ? statSync(filePath).size : 0;
+		if (size > 0 && size === previousSize) return true;
+		previousSize = size;
+		await sleep(250);
+	}
+
+	return false;
+}
+
 /* ------------------------------------------------------------------- main -- */
 
 const args = process.argv.slice(2);
@@ -360,6 +391,14 @@ try {
 					`  ! ffmpeg not found, so no GIF was made. Install it with\n` +
 						`      winget install Gyan.FFmpeg\n` +
 						`    then re-run with --only ${slug} --force, or convert the file above by hand.`,
+				);
+				continue;
+			}
+
+			if (!(await waitForRecordingToFinalise(obs, recordedPath))) {
+				console.log(
+					"  ! OBS is still writing the recording. Convert the file above by hand\n" +
+						"    once it has finished.",
 				);
 				continue;
 			}
