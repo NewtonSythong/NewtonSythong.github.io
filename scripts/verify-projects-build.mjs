@@ -12,7 +12,8 @@ import yaml from "js-yaml";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const projectsDir = path.join(root, "src/content/projects");
-const distProjectsDir = path.join(root, "dist/projects");
+const distDir = path.join(root, "dist");
+const distProjectsDir = path.join(distDir, "projects");
 
 function readFrontmatter(filePath) {
 	const raw = readFileSync(filePath, "utf-8");
@@ -44,11 +45,29 @@ for (const entry of entries) {
 	} else {
 		console.log(`✓ ${entry.slug} (${status})`);
 	}
+
+	// Project imagery is referenced by hand-written root-relative path and is
+	// served straight from public/ rather than imported as a build asset, so
+	// nothing else would catch a typo or a file that never got copied across —
+	// it would simply ship as a broken image. The schema can only check the
+	// path's shape; this checks the file is actually there.
+	const images = [entry.image, ...(entry.gallery ?? [])].filter(Boolean);
+
+	for (const image of images) {
+		if (!existsSync(path.join(distDir, image.src))) {
+			console.error(`✗ "${entry.slug}" references ${image.src}, which is not in dist/.`);
+			failures++;
+		}
+	}
+
+	if (images.length > 0 && failures === 0) {
+		console.log(`  ${images.length} image(s) present`);
+	}
 }
 
 if (failures > 0) {
-	console.error(`\n${failures} project route check(s) failed.`);
+	console.error(`\n${failures} project check(s) failed.`);
 	process.exit(1);
 }
 
-console.log(`\nAll ${entries.length} project route(s) verified.`);
+console.log(`\nAll ${entries.length} project route(s) and their imagery verified.`);

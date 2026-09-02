@@ -19,7 +19,7 @@ const { Content } = await render(project);
 
 <Layout title={`${project.data.name} — Newton Sythong`} description={project.data.description}>
 	<article>
-		<p><a href="/#projects">← Back to Projects</a></p>
+		<a class="back" href="/#projects">Back to Projects</a>
 		<h1>{project.data.name}</h1>
 		{
 			project.data.image && (
@@ -52,18 +52,47 @@ const { Content } = await render(project);
 			)
 		}
 		<Content />
+		{
+			project.data.gallery.length > 0 && (
+				<section class="gallery" aria-labelledby="gallery-heading">
+					<h2 id="gallery-heading">More screenshots</h2>
+					<ul>
+						{project.data.gallery.map((shot) => (
+							<li>
+								<img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+							</li>
+						))}
+					</ul>
+				</section>
+			)
+		}
 	</article>
 </Layout>
 
 <style>
-	article {
-		padding: 3rem 1.5rem;
-		max-width: 40rem;
+	/* Article width, the h1 treatment and the `.tags` pills are shared from
+	   src/styles/global.css. */
+
+	/* The arrow slides back on hover — the same gesture as the forward arrow
+	   on the Projects cards, pointed the other way. */
+	.back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin: 0 0 1.75rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		text-decoration: none;
 	}
 
-	h1 {
-		font-family: monospace;
-		color: var(--color-accent);
+	.back::before {
+		content: "←";
+		transition: transform 0.25s var(--ease);
+	}
+
+	.back:hover::before,
+	.back:focus-visible::before {
+		transform: translateX(-3px);
 	}
 
 	/* Unlike the card thumbnails this one carries real information — it is
@@ -73,23 +102,58 @@ const { Content } = await render(project);
 		display: block;
 		width: 100%;
 		height: auto;
-		margin: 1.5rem 0;
-		border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
-		border-radius: 0.375rem;
+		margin: 0 0 1.75rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+	}
+
+	.contribution {
+		font-size: 0.92rem;
+	}
+
+	.contribution strong {
+		color: var(--color-text);
 	}
 
 	.tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		padding: 0;
-		list-style: none;
-		font-size: 0.8rem;
+		margin: 1.25rem 0;
 	}
 
-	.tags li {
-		border: 1px solid currentColor;
-		border-radius: 999px;
-		padding: 0.1rem 0.6rem;
+	/* Screenshots vary in aspect ratio — some are full-window captures, others
+	   are trimmed to a wide strip — so they are shown at their natural shape
+	   rather than cropped to a common ratio. Cropping is right on the cards,
+	   where a ragged grid would look careless; here the whole point is to see
+	   the thing properly. */
+	.gallery {
+		margin-top: 2.5rem;
+		padding-top: 1.75rem;
+		border-top: 1px solid var(--color-border);
+	}
+
+	.gallery h2 {
+		margin: 0 0 1.25rem;
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		font-weight: 500;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--color-text-muted);
+	}
+
+	.gallery ul {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.gallery img {
+		display: block;
+		width: 100%;
+		height: auto;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
 	}
 </style>
