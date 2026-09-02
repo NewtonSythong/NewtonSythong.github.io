@@ -20,7 +20,11 @@ const sorted = [...entries].sort((a, b) => b.data.startDate.localeCompare(a.data
 					</h3>
 					<p class="dates">
 						{entry.data.startDate}
-						{entry.data.endDate ? ` – ${entry.data.endDate}` : " – Present"}
+						{entry.data.endDate === entry.data.startDate
+							? ""
+							: entry.data.endDate
+								? ` – ${entry.data.endDate}`
+								: " – Present"}
 					</p>
 					<p>{entry.data.description}</p>
 					{entry.data.tags.length > 0 && (
