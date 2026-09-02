@@ -46,6 +46,20 @@ const navLinks = [
 		*/}
 		<script is:inline>
 			document.documentElement.classList.add("js");
+
+			// Failsafe. The `js` class is the only thing hiding the sections,
+			// and the script that reveals them is a deferred module that could
+			// fail to load or throw. If it has not reported for duty shortly
+			// after load, drop the class so every section is simply visible: a
+			// missing animation is a far smaller problem than a page that
+			// looks empty.
+			window.addEventListener("load", function () {
+				setTimeout(function () {
+					if (!window.__revealReady) {
+						document.documentElement.classList.remove("js");
+					}
+				}, 1000);
+			});
 		</script>
 	</head>
 	<body>
@@ -111,29 +125,63 @@ const navLinks = [
 	}
 
 	// Scroll reveals. Sections are hidden by CSS (see global.css) and marked
-	// visible once they enter the viewport; the mark is never removed, so a
-	// section that has arrived stays put instead of re-animating when the
+	// visible once they reach the viewport; the mark is never removed, so a
+	// section that has arrived stays put rather than re-animating when the
 	// visitor scrolls back up.
-	const revealTargets = document.querySelectorAll<HTMLElement>("main > section, main > article");
+	//
+	// This is a plain geometry check on scroll rather than an
+	// IntersectionObserver. The observer version hid every section below the
+	// first one on at least one real browser, and its behaviour depends on
+	// threshold-versus-element-height interactions that are hard to reason
+	// about for sections taller than the viewport. Comparing rectangles is
+	// duller, but it is obvious what it does and it degrades toward showing
+	// content rather than hiding it.
+	// Read by the failsafe in the inline <head> script above, which reveals
+	// everything if this module never gets a chance to.
+	declare global {
+		interface Window {
+			__revealReady?: boolean;
+		}
+	}
 
-	if (!("IntersectionObserver" in window)) {
-		// Without the API there is no way to know what is on screen, so show
-		// everything rather than leaving the page blank.
-		revealTargets.forEach((target) => target.setAttribute("data-visible", ""));
-	} else {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (!entry.isIntersecting) continue;
-					entry.target.setAttribute("data-visible", "");
-					observer.unobserve(entry.target);
-				}
-			},
-			// Fires a little before the section is fully on screen, so the
-			// reveal has finished by the time the visitor is reading it.
-			{ rootMargin: "0px 0px -10% 0px", threshold: 0.05 },
-		);
+	window.__revealReady = true;
 
-		revealTargets.forEach((target) => observer.observe(target));
+	const revealTargets = Array.from(
+		document.querySelectorAll<HTMLElement>("main > section, main > article"),
+	);
+
+	function revealVisible() {
+		const trigger = window.innerHeight * 0.92;
+		let pending = 0;
+
+		for (const target of revealTargets) {
+			if (target.hasAttribute("data-visible")) continue;
+
+			const box = target.getBoundingClientRect();
+			// Anything whose top edge has reached the trigger line, or that is
+			// already straddling the viewport, counts as arrived.
+			if (box.top < trigger && box.bottom > 0) {
+				target.setAttribute("data-visible", "");
+			} else {
+				pending++;
+			}
+		}
+
+		return pending;
+	}
+
+	if (revealTargets.length > 0 && revealVisible() > 0) {
+		const onScroll = () => {
+			if (revealVisible() === 0) {
+				window.removeEventListener("scroll", onScroll);
+				window.removeEventListener("resize", onScroll);
+			}
+		};
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onScroll);
+		// Images and fonts change section heights after first paint, so
+		// re-check once everything has settled.
+		window.addEventListener("load", onScroll, { once: true });
 	}
 </script>
