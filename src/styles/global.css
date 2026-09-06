@@ -249,6 +249,56 @@ a {
 	background-color: hsl(var(--accent-hsl) / 0.08);
 }
 
+/* On a phone the five links plus the toggle pill no longer fit on one line,
+   and the wrapped second row made the sticky header eat a chunk of the
+   viewport on every screen. Narrow screens instead get one slim row: tighter
+   type and padding, the label on the toggle swapped for a glyph, and the
+   links scrolling sideways rather than wrapping if they still overrun. */
+@media (max-width: 40rem) {
+	.site-nav {
+		flex-wrap: nowrap;
+		gap: 0.6rem;
+		padding: 0.45rem 1rem;
+	}
+
+	.site-nav ul {
+		flex: 1;
+		min-width: 0;
+		flex-wrap: nowrap;
+		gap: 0.75rem;
+		/* `overflow-x` also clips vertically, so the hover underline needs
+		   room inside the scroller rather than outside it. */
+		padding-block: 0.35rem;
+		overflow-x: auto;
+		scrollbar-width: none;
+		font-size: 0.72rem;
+	}
+
+	.site-nav ul::-webkit-scrollbar {
+		display: none;
+	}
+
+	.site-nav li {
+		flex: none;
+	}
+
+	#theme-toggle {
+		flex: none;
+		padding: 0.25rem 0.45rem;
+		font-size: 0.85rem;
+		line-height: 1;
+	}
+
+	.theme-toggle-text {
+		/* The button keeps its aria-label, so the visible text can go. */
+		display: none;
+	}
+
+	#theme-toggle::before {
+		content: "◑";
+	}
+}
+
 /* --- Sections ------------------------------------------------------------ */
 
 main {
