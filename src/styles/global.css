@@ -19,7 +19,11 @@
 
 	--bg-hsl: 215 40% 98%;
 	--text-hsl: 218 45% 11%;
-	--muted-hsl: 216 24% 37%;
+	/* Body copy sits a step off the heading colour, not a whole tone below
+	   it: the muted token is read at paragraph length, so it is pitched for
+	   sustained reading (>8:1 against the page in both themes) rather than
+	   for the faintest grey that still passes a contrast check. */
+	--muted-hsl: 216 26% 31%;
 	--accent-hsl: 222 76% 42%;
 	--border-hsl: 216 30% 86%;
 	--surface-hsl: 0 0% 100%;
@@ -47,7 +51,7 @@
 
 	--bg-hsl: 220 52% 5%;
 	--text-hsl: 216 40% 91%;
-	--muted-hsl: 216 24% 70%;
+	--muted-hsl: 216 28% 78%;
 	--accent-hsl: 218 100% 76%;
 	--border-hsl: 218 34% 19%;
 	--surface-hsl: 220 44% 9%;
