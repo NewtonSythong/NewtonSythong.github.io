@@ -16,14 +16,23 @@ reader already trusts is treated as the answer rather than as a consolation
 prize, and that person can reply from a page with three buttons on it without
 typing a word.
 
-Measured against a corpus of sixteen messages the engine was never built
-against, it raised 5 of 8 unfamiliar scams and left all 8 legitimate messages
-quiet, including five genuine messages deliberately wearing a scam's clothes —
-a real courier's shortened link, a real bank asking you to confirm a payment, a
-real family member asking for money. The benchmark earned its keep on its first
-run by catching the app calling a genuine NZ Post tracking text a scam, because
-NZ Post's own link shortener was missing from its records. Every reason to
-distrust those figures is published alongside them.
+Measured against a corpus of twenty messages the engine was never built
+against, it raised all nine unfamiliar scams and left all eight legitimate
+messages quiet — including five genuine messages deliberately wearing a scam's
+clothes: a real courier's shortened link, a real bank asking you to confirm a
+payment, a real family member asking for money. Six of those scam texts are
+verbatim, transcribed from screenshots the banks publish because New Zealand
+organisations release annotated images of scam texts rather than the text.
+
+The benchmark is built to be distrusted. Three messages are excluded from that
+figure because the engine was later changed while looking at them, so they now
+pass by construction and prove nothing — the corpus records that permanently and
+every run says so. A second benchmark runs the language model's half with the
+deterministic rules taken away, because most real scam texts carry a lookalike
+domain that the rules catch on their own: without it, a broken pattern in the
+model would be invisible in the headline number. Its first run showed two of
+three new patterns firing on real messages nobody had written them from, and the
+third still unvalidated for want of a real example.
 
 It is AGPL-licensed and open to contributions. The most useful one is not code:
 New Zealand publishes almost no scam message text — banks and agencies release
