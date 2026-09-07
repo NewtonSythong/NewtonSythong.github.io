@@ -16,15 +16,16 @@ reader already trusts is treated as the answer rather than as a consolation
 prize, and that person can reply from a page with three buttons on it without
 typing a word.
 
-Measured against a corpus of twenty messages the engine was never built
+Measured against a corpus of twenty-one messages the engine was never built
 against, it raised all nine unfamiliar scams and left all eight legitimate
 messages quiet — including five genuine messages deliberately wearing a scam's
 clothes: a real courier's shortened link, a real bank asking you to confirm a
-payment, a real family member asking for money. Six of those scam texts are
-verbatim, transcribed from screenshots the banks publish because New Zealand
-organisations release annotated images of scam texts rather than the text.
+payment, a real family member asking for money. Seven of those scam texts are
+verbatim: six transcribed from screenshots the banks publish, because New
+Zealand organisations release annotated images of scam texts rather than the
+text, and one pasted straight out of a real junk folder.
 
-The benchmark is built to be distrusted. Three messages are excluded from that
+The benchmark is built to be distrusted. Four messages are excluded from that
 figure because the engine was later changed while looking at them, so they now
 pass by construction and prove nothing — the corpus records that permanently and
 every run says so. A second benchmark runs the language model's half with the
