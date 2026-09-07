@@ -14,7 +14,7 @@ const featured = allProjects.filter((project) => project.data.status === "featur
 	<ul class="project-list">
 		{
 			featured.map((project) => (
-				<li class="card">
+				<li class="card card-link">
 					{project.data.image && (
 						<a class="thumb" href={`/projects/${project.data.slug}`} tabindex="-1" aria-hidden="true">
 							<img
@@ -28,7 +28,11 @@ const featured = allProjects.filter((project) => project.data.status === "featur
 						</a>
 					)}
 					<h3>
-						<a href={`/projects/${project.data.slug}`}>{project.data.name}</a>
+						{/* `stretch` hands this link the whole card as its click
+						    target — see the `.card-link` rules in global.css. */}
+						<a class="stretch" href={`/projects/${project.data.slug}`}>
+							{project.data.name}
+						</a>
 					</h3>
 					<p>{project.data.description}</p>
 					<p class="contribution">
@@ -79,7 +83,9 @@ const featured = allProjects.filter((project) => project.data.status === "featur
 
 	/* The card's heading link already names the project, so the thumbnail is
 	   redundant to a screen reader — hidden from the accessibility tree and
-	   taken out of the tab order rather than given a duplicate label. */
+	   taken out of the tab order rather than given a duplicate label. It is
+	   left under the heading link's overlay rather than raised above it: both
+	   go to the same page, so there is nothing to rescue. */
 	.thumb {
 		display: block;
 		margin: 0 -1.5rem 1.1rem;
@@ -119,7 +125,10 @@ const featured = allProjects.filter((project) => project.data.status === "featur
 		transition: color 0.25s var(--ease);
 	}
 
-	h3 a:hover,
+	/* The title colours on hover of the *card*, not just of the two words of
+	   heading text — the whole card is the link now, so it should all
+	   respond together. */
+	.card-link:hover h3 a,
 	h3 a:focus-visible {
 		color: var(--color-accent);
 	}

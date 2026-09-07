@@ -1,0 +1,137 @@
+---
+// A teaser for the AI-written character reference. The letter itself runs
+// to roughly 950 words and lives at /reference — longer than every other
+// section of the home page put together, so what sits here is a
+// three-paragraph pull quote and a link out, in the same shape as a
+// Projects card pointing at its detail page.
+---
+
+<section id="reference" aria-labelledby="reference-heading">
+	<h2 id="reference-heading">A character reference, by an AI</h2>
+
+	<p class="framing">
+		An AI built most of this site, so it seemed fair to let one have a say
+		about the person it was building it for. I asked ChatGPT for an honest
+		character reference, and haven't edited a word of it.
+	</p>
+
+	<figure class="card card-link letter">
+		<blockquote>
+			<p>
+				Newton is, above all, <strong>curious</strong>. He does not seem
+				particularly satisfied with simply being told that something is
+				true. He tends to ask <em>why</em>, then <em>how</em>, and
+				eventually <em
+					>what would happen if we changed the underlying assumption?</em
+				>
+			</p>
+			<p>
+				That curiosity is one of his greatest strengths, but it can also be
+				one of his weaknesses. Newton can <strong
+					>overthink things considerably</strong
+				>. He sometimes continues analysing a problem long after he has
+				enough information to make a reasonable decision.
+			</p>
+			<p>
+				Give him a meaningless task with no explanation and he may struggle
+				to care. Give him a difficult problem and tell him why it matters,
+				and I suspect you may have considerably more of his attention than
+				you expected.
+			</p>
+		</blockquote>
+
+		<footer class="letter-foot">
+			<figcaption>ChatGPT · reproduced unedited</figcaption>
+			<a class="read-link stretch" href="/reference">Read the letter in full</a>
+		</footer>
+	</figure>
+</section>
+
+<style>
+	/* Section furniture comes from src/styles/global.css. What is local here
+	   is the letter's own treatment: Newton's framing in the page's normal
+	   voice, then the quotation set apart from it so a reader can tell at a
+	   glance which words are his and which are the machine's. */
+	.framing {
+		margin: 0 0 1.5rem;
+	}
+
+	/* `.card-link` from global.css, exactly like a Projects card: the excerpt
+	   is a teaser and the whole surface is the way through to the full letter,
+	   so the hover lift is a promise the card can keep. All that is added
+	   here is an accent rule down the leading edge, marking the text as
+	   borrowed speech without the punctuation clutter of opening a quote that
+	   runs for three paragraphs. */
+	.letter {
+		margin: 0;
+		border-inline-start: 2px solid hsl(var(--accent-hsl) / 0.55);
+	}
+
+	blockquote {
+		margin: 0;
+	}
+
+	blockquote p:first-child {
+		margin-top: 0;
+	}
+
+	blockquote p:last-child {
+		margin-bottom: 0;
+	}
+
+	/* This excerpt is the only part of the letter most visitors will read,
+	   so it sits at full text colour rather than the muted body colour. */
+	blockquote p {
+		color: var(--color-text);
+	}
+
+	strong {
+		font-weight: 600;
+		color: var(--color-text);
+	}
+
+	/* Attribution and the way onward share one footer rule, so the link is
+	   part of the card rather than an orphan floating beneath it. They sit at
+	   opposite ends of the row: who said it on the left, where to read the
+	   rest on the right. */
+	.letter-foot {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.6rem 1.25rem;
+		margin-top: 1.35rem;
+		padding-top: 0.9rem;
+		border-top: 1px solid var(--color-border);
+	}
+
+	figcaption {
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		color: var(--color-text-muted);
+	}
+
+	/* The same arrow that leans forward on a project's live-demo link — the
+	   same gesture, pointing at a page of this site rather than off-site. */
+	.read-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		text-decoration: none;
+	}
+
+	.read-link::after {
+		content: "→";
+		transition: transform 0.25s var(--ease);
+	}
+
+	/* The arrow answers a hover anywhere on the card, not only on the two
+	   words of link text — the whole card is the link, so it all moves as one
+	   piece. */
+	.card-link:hover .read-link::after,
+	.read-link:focus-visible::after {
+		transform: translateX(3px);
+	}
+</style>
