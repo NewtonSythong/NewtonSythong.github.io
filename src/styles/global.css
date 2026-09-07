@@ -395,6 +395,9 @@ main > article > h1::after {
 /* --- Cards --------------------------------------------------------------- */
 
 .card {
+	/* Anchors the stretched link on `.card-link` cards below. Harmless on
+	   the plain ones. */
+	position: relative;
 	padding: 1.35rem 1.5rem;
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius);
@@ -412,15 +415,53 @@ main > article > h1::after {
 	margin-bottom: 0;
 }
 
-/* A lift rather than the reference's `scale(1.02)`: scaling a card resamples
-   its text and thumbnail every frame, which shimmers on non-retina displays.
-   Translating does not, and reads as the same gesture. */
+/* --- Navigational cards --------------------------------------------------
+ * The hover lift is reserved for `.card-link` — a card that, as a whole,
+ * goes somewhere. A plain `.card` is a surface holding static content and
+ * stays still, because a card that rises to meet the cursor and then does
+ * nothing when clicked is a promise the markup cannot keep. (Experience
+ * entries contain no link at all and used to lift regardless.)
+ *
+ * A lift rather than the reference's `scale(1.02)`: scaling a card resamples
+ * its text and thumbnail every frame, which shimmers on non-retina displays.
+ * Translating does not, and reads as the same gesture.
+ */
 @media (hover: hover) {
-	.card:hover {
+	.card-link:hover {
 		transform: translateY(-3px);
 		border-color: hsl(var(--accent-hsl) / 0.5);
 		box-shadow: 0 14px 30px -18px hsl(var(--accent-hsl) / 0.55);
 	}
+}
+
+/* What makes the promise good: the card's primary link throws an invisible
+   overlay across the whole card, so the entire surface is the click target —
+   a far bigger one on a phone than a single line of heading text. The
+   element is a real link, so it still keyboard-focuses, right-clicks and
+   opens in a new tab like any other. */
+.card-link .stretch::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+}
+
+/* Anything inside the card that goes somewhere *else* has to sit above that
+   overlay, or the card would swallow it. */
+.card-link a:not(.stretch) {
+	position: relative;
+	z-index: 1;
+}
+
+/* Focus follows the click target: tabbing to the primary link rings the
+   whole card rather than drawing a small box around the heading text, which
+   would suggest the heading alone was actionable. */
+.card-link:has(.stretch:focus-visible) {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 3px;
+}
+
+.card-link .stretch:focus-visible {
+	outline: none;
 }
 
 /* --- Scroll reveals ------------------------------------------------------
