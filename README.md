@@ -29,10 +29,9 @@ All commands run from the project root:
 | `npm run build`         | Build the production site to `./dist/`                       |
 | `npm run preview`       | Preview the production build locally                         |
 | `npm test`              | Run the test suite (Vitest)                                  |
-| `npm run verify:build`  | Build and then validate the built project pages               |
+| `npm run shots`         | Recapture the project screenshots from the live apps          |
 | `npm run astro ...`     | Run Astro CLI commands (e.g. `astro add`, `astro check`)     |
 
-Agents working in this repo should start the dev server in the background — see [`CLAUDE.md`](./CLAUDE.md).
 
 ## Working from another device
 
@@ -54,6 +53,31 @@ This repo is private, so pushes/pulls need an authenticated GitHub account, not 
 4. **Clone the repo** (see [Setup](#setup) above)
 
 After that, `git push`/`git pull` authenticate automatically on that device.
+
+## Project screenshots
+
+The images on the project cards are captured from the live apps by a script, not
+by hand, so they can be refreshed from any machine rather than from whichever
+one happens to have the originals on it:
+
+```sh
+npx playwright install chromium   # once per device
+npm run shots                     # every shot
+npm run shots -- scam             # only shots whose name contains "scam"
+```
+
+Each shot is rendered in a small 16:9 viewport at three times device scale and
+downsampled to a 1600x900 `.webp` in `public/images/projects/`, which is the
+size the cards and the detail-page galleries expect. To add or change a shot,
+edit the `SHOTS` list at the top of
+[`scripts/capture-screenshots.mjs`](./scripts/capture-screenshots.mjs) — a shot
+is a name, a URL, and optionally a `setup(page)` that clicks the app into the
+state worth photographing. Then add the file to the project's front matter in
+`src/content/projects/`, with `alt`, `width` and `height`, all of which the
+content schema requires.
+
+Only the scam checker is wired up so far; the other projects' images predate the
+script and were captured by hand.
 
 ## Project structure
 
