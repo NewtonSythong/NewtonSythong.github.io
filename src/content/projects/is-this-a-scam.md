@@ -58,9 +58,25 @@ pass by construction and prove nothing — the corpus records that permanently a
 every run says so. A second benchmark runs the language model's half with the
 deterministic rules taken away, because most real scam texts carry a lookalike
 domain that the rules catch on their own: without it, a broken pattern in the
-model would be invisible in the headline number. Its first run showed two of
-three new patterns firing on real messages nobody had written them from, and the
-third still unvalidated for want of a real example.
+model would be invisible in the headline number.
+
+That second benchmark was then pointed at 292 real reported scam texts nobody on
+the project had read, taken from a public research dataset — every row that would
+have needed an invented word to read naturally was thrown out rather than filled
+in. With the rules switched off, the model's half alone found something in 59.9%
+of them, against the twelve out of twelve the small corpus had been reporting.
+That gap is the cost of measuring an engine on messages somebody has already
+fixed it against, and it is the reason the small corpus is now retired rather
+than extended.
+
+The same run exposed a blind spot. Wrong-number texts — "is this Sarah? sorry,
+wrong number", the opening move of the long investment frauds, aimed at people
+who are lonely — were caught two times in forty, because nothing in the engine
+covered a message that asks for nothing, names nobody and links nowhere. A
+pattern written from the FTC's and Netsafe's published descriptions rather than
+from any message in the corpus took that to thirteen in forty with no new false
+alarms, which makes it the first pattern here whose generalisation was
+established before anybody read the misses.
 
 It is [AGPL-licensed and open to
 contributions](https://github.com/NewtonSythong/is-this-a-scam). The most useful
