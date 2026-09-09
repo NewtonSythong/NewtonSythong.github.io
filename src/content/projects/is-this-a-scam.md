@@ -5,6 +5,32 @@ tags: ["TypeScript", "Next.js", "Claude API", "Safe Browsing", "AGPL"]
 description: "A scam checker for older and less digitally confident New Zealanders. Paste a suspicious text or email and get an answer in plain language — and never the words 'this is safe', because a false reassurance costs someone their savings while a false warning costs them a phone call."
 contribution: "Sole design and build. Set the product constraints the architecture is built around — that the app may never call a message safe, that the worse of its two engines always wins, and that the model may not write its own sentences but must pick from a reviewed catalogue and quote the words that made it pick, so hallucination is caught by code rather than by the reader. Required a published effectiveness benchmark before deployment rather than shipping on passing tests, and licensed it AGPL so a degraded fork cannot be deployed as a black box."
 liveDemoUrl: "https://is-this-a-scam-pink.vercel.app"
+image:
+  src: "/images/projects/is-this-a-scam.webp"
+  alt: "A verdict reading “This is a scam. Do not reply, do not tap the link.” above three plain-language reasons — the link goes to anz-secure.top rather than a real ANZ address, the message invents a problem with your account, and it is trying to rush you"
+  width: 1600
+  height: 900
+gallery:
+  - src: "/images/projects/is-this-a-scam-home.webp"
+    alt: "The opening screen: one heading asking “Is this a scam?”, a note that nothing is saved, a box to paste a message into, and a single Check this message button"
+    width: 1600
+    height: 900
+  - src: "/images/projects/is-this-a-scam-quiet.webp"
+    alt: "A genuine bank message returning “We can’t tell. Don’t act on this until someone you trust has looked.” rather than an all-clear, with a prompt to send it to a family member or friend"
+    width: 1600
+    height: 900
+  - src: "/images/projects/is-this-a-scam-gift-card.webp"
+    alt: "A “Hi Mum, this is my new number” message returning “This has warning signs. Don’t do anything it asks yet.”, naming the gift-card payment and the new-number pretext, with an option to report the message"
+    width: 1600
+    height: 900
+  - src: "/images/projects/is-this-a-scam-scams.webp"
+    alt: "A “Scams going around” page listing the seven patterns currently being reported in New Zealand, from the parcel fee to the investment that cannot lose"
+    width: 1600
+    height: 900
+  - src: "/images/projects/is-this-a-scam-helping.webp"
+    alt: "A page written for the daughter, son or neighbour of someone being targeted, headed “Be the person they ring”, with steps to set the app up on their phone once"
+    width: 1600
+    height: 900
 status: "featured"
 ---
 

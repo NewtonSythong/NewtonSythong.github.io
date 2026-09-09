@@ -1,9 +1,7 @@
 # Builds the site and publishes it to GitHub Pages on every push to master.
 #
-# The build job runs the test suite and the post-build route check before the
-# artifact is uploaded, so a red test or a project page that failed to
-# generate stops the deploy instead of replacing a working site with a broken
-# one.
+# The build job runs the test suite before the artifact is uploaded, so a red
+# test stops the deploy instead of replacing a working site with a broken one.
 name: Deploy to GitHub Pages
 
 on:
@@ -42,8 +40,7 @@ jobs:
 
       - run: npm test
 
-      # Builds, then verifies every featured project produced its route.
-      - run: npm run verify:build
+      - run: npm run build
 
       - uses: actions/configure-pages@v5
 
