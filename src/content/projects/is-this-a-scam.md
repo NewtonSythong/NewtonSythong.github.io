@@ -61,12 +61,10 @@ domain that the rules catch on their own: without it, a broken pattern in the
 model would be invisible in the headline number.
 
 That second benchmark was then pointed at 292 real reported scam texts nobody on
-the project had read, taken from a public research dataset — every row that would
-have needed an invented word to read naturally was thrown out rather than filled
-in. With the rules switched off, the model's half alone found something in 59.9%
-of them, against the twelve out of twelve the small corpus had been reporting.
-That gap is the cost of measuring an engine on messages somebody has already
-fixed it against, and it is the reason the small corpus is now retired rather
+the project had read. With the rules switched off, the model's half alone found
+something in 59.9% of them, against the twelve out of twelve the small corpus had
+been reporting. That gap is the cost of measuring an engine on messages somebody
+has already fixed it against, and it is why that corpus is now retired rather
 than extended.
 
 The same run exposed a blind spot. Wrong-number texts — "is this Sarah? sorry,
