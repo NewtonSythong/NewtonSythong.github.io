@@ -45,15 +45,29 @@ const featured = allProjects.filter((project) => project.data.status === "featur
 							))}
 						</ul>
 					)}
-					{project.data.liveDemoUrl && (
-						<a
-							class="demo-link"
-							href={project.data.liveDemoUrl}
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							Live demo
-						</a>
+					{(project.data.liveDemoUrl || project.data.sourceUrl) && (
+						<p class="out-links">
+							{project.data.liveDemoUrl && (
+								<a
+									class="out-link"
+									href={project.data.liveDemoUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									Live demo
+								</a>
+							)}
+							{project.data.sourceUrl && (
+								<a
+									class="out-link"
+									href={project.data.sourceUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									Source
+								</a>
+							)}
+						</p>
 					)}
 				</li>
 			))
@@ -150,25 +164,33 @@ const featured = allProjects.filter((project) => project.data.status === "featur
 		margin-top: 0.9rem;
 	}
 
-	/* The live-demo link is the one outbound call to action on a card, so it
-	   gets an arrow that leans out on hover rather than a plain underline. */
-	.demo-link {
+	/* The outbound calls to action — the running app, and the code behind it.
+	   Each gets an arrow that leans out on hover rather than a plain
+	   underline. They sit in a row of their own so that a card with both
+	   reads as offering two doors rather than one sentence of links. */
+	.out-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem 1.4rem;
+		margin: 0.9rem 0 0;
+	}
+
+	.out-link {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.4rem;
-		margin-top: 0.9rem;
 		font-family: var(--font-mono);
 		font-size: 0.8rem;
 		text-decoration: none;
 	}
 
-	.demo-link::after {
+	.out-link::after {
 		content: "→";
 		transition: transform 0.25s var(--ease);
 	}
 
-	.demo-link:hover::after,
-	.demo-link:focus-visible::after {
+	.out-link:hover::after,
+	.out-link:focus-visible::after {
 		transform: translateX(3px);
 	}
 </style>

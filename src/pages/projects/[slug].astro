@@ -45,11 +45,18 @@ const { Content } = await render(project);
 			)
 		}
 		{
-			project.data.liveDemoUrl && (
-				<p>
-					<a href={project.data.liveDemoUrl} target="_blank" rel="noopener noreferrer">
-						Live demo
-					</a>
+			(project.data.liveDemoUrl || project.data.sourceUrl) && (
+				<p class="out-links">
+					{project.data.liveDemoUrl && (
+						<a href={project.data.liveDemoUrl} target="_blank" rel="noopener noreferrer">
+							Live demo
+						</a>
+					)}
+					{project.data.sourceUrl && (
+						<a href={project.data.sourceUrl} target="_blank" rel="noopener noreferrer">
+							Source
+						</a>
+					)}
 				</p>
 			)
 		}
@@ -102,6 +109,18 @@ const { Content } = await render(project);
 	.back:hover::before,
 	.back:focus-visible::before {
 		transform: translateX(-3px);
+	}
+
+	/* The two outbound doors — the running app and the code — sit on one row
+	   rather than stacking into two paragraphs, matching how the Projects
+	   cards present the same pair. These keep the document's default link
+	   styling rather than the cards' mono treatment: inside a page of prose
+	   they are part of the reading, not a call to action bolted underneath
+	   it. */
+	.out-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem 1.4rem;
 	}
 
 	/* Unlike the card thumbnails this one carries real information — it is
