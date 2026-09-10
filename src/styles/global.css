@@ -197,7 +197,10 @@ a {
 	font-size: 0.85rem;
 }
 
-.site-nav a {
+/* Scoped to the section list rather than to every anchor in the header: the
+   GitHub link below is a pill, and the growing underline would sit across it
+   like a strikethrough. */
+.site-nav ul a {
 	position: relative;
 	color: var(--color-text-muted);
 	text-decoration: none;
@@ -207,7 +210,7 @@ a {
 /* The underline grows from the left on hover rather than appearing all at
    once — cheap to run (transform only), and it gives the nav the same sense
    of direction as the scroll reveals below. */
-.site-nav a::after {
+.site-nav ul a::after {
 	content: "";
 	position: absolute;
 	inset-inline: 0;
@@ -219,18 +222,28 @@ a {
 	transition: transform 0.28s var(--ease);
 }
 
-.site-nav a:hover,
-.site-nav a:focus-visible {
+.site-nav ul a:hover,
+.site-nav ul a:focus-visible {
 	color: var(--color-text);
 }
 
-.site-nav a:hover::after,
-.site-nav a:focus-visible::after {
+.site-nav ul a:hover::after,
+.site-nav ul a:focus-visible::after {
 	transform: scaleX(1);
 }
 
-#theme-toggle {
+/* The right-hand cluster: things that act on the site or leave it, held
+   apart from the list of places on this page. The `auto` margin lives here
+   rather than on the toggle so the two travel together. */
+.nav-actions {
 	margin-inline-start: auto;
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+.nav-github,
+#theme-toggle {
 	background: none;
 	border: 1px solid var(--color-border);
 	color: var(--color-text-muted);
@@ -239,6 +252,8 @@ a {
 	font: inherit;
 	font-family: var(--font-mono);
 	font-size: 0.8rem;
+	line-height: 1.5;
+	text-decoration: none;
 	cursor: pointer;
 	transition:
 		border-color 0.25s var(--ease),
@@ -246,6 +261,8 @@ a {
 		background-color 0.25s var(--ease);
 }
 
+.nav-github:hover,
+.nav-github:focus-visible,
 #theme-toggle:hover,
 #theme-toggle:focus-visible {
 	color: var(--color-accent);
@@ -284,6 +301,21 @@ a {
 
 	.site-nav li {
 		flex: none;
+	}
+
+	.nav-actions {
+		flex: none;
+		gap: 0.4rem;
+	}
+
+	/* The GitHub pill keeps its word where the toggle loses its label: the
+	   toggle's glyph is self-explanatory, and an unlabelled mark here would
+	   be a mystery button in the one place a visitor is most likely to be
+	   looking for the code. */
+	.nav-github {
+		flex: none;
+		padding: 0.25rem 0.6rem;
+		font-size: 0.72rem;
 	}
 
 	#theme-toggle {

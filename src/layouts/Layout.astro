@@ -95,9 +95,27 @@ const navLinks = [
 						))
 					}
 				</ul>
-				<button id="theme-toggle" type="button" aria-label="Toggle color theme">
-					<span class="theme-toggle-text">Toggle theme</span>
-				</button>
+				<div class="nav-actions">
+					{/*
+					  The one outbound link in the header. It sits with the
+					  theme toggle rather than among the section links,
+					  because everything in that list scrolls you down this
+					  page and this leaves it — a distinction worth keeping
+					  visible. Contact carries the same link at the foot of
+					  the page, but the foot of this page is seven screens
+					  down, and someone who wants to look at the code should
+					  not have to read a portfolio first.
+					*/}
+					<a
+						class="nav-github"
+						href="https://github.com/NewtonSythong"
+						target="_blank"
+						rel="noopener noreferrer">GitHub</a
+					>
+					<button id="theme-toggle" type="button" aria-label="Toggle color theme">
+						<span class="theme-toggle-text">Toggle theme</span>
+					</button>
+				</div>
 			</nav>
 		</header>
 		<main>
