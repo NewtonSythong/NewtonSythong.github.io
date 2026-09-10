@@ -50,6 +50,30 @@ describe("projectSchema", () => {
 		expect(result.success).toBe(true);
 	});
 
+	// `sourceUrl` has to stay optional: most entries here are team coursework
+	// in private repositories, and the site must not require a link it cannot
+	// honestly provide.
+	it("accepts an entry with no `sourceUrl`", () => {
+		const result = projectSchema.safeParse(validProject);
+		expect(result.success).toBe(true);
+	});
+
+	it("accepts a `sourceUrl`", () => {
+		const result = projectSchema.safeParse({
+			...validProject,
+			sourceUrl: "https://github.com/NewtonSythong/is-this-a-scam",
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it("rejects a `sourceUrl` that is not a URL", () => {
+		const result = projectSchema.safeParse({
+			...validProject,
+			sourceUrl: "NewtonSythong/is-this-a-scam",
+		});
+		expect(result.success).toBe(false);
+	});
+
 	it("accepts an image with `src`, `alt` and intrinsic dimensions", () => {
 		const result = projectSchema.safeParse({
 			...validProject,

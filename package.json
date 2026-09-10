@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
-    "shots": "node scripts/capture-screenshots.mjs"
+    "shots": "node scripts/capture-screenshots.mjs",
+    "shots:login": "node scripts/capture-screenshots.mjs --login"
   },
   "dependencies": {
     "astro": "^7.2.4"

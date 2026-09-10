@@ -2,6 +2,11 @@
 // Real contact address and résumé asset (public/resume.pdf, sourced from
 // NewtonCV3.pdf) per ticket 10.
 const email = "newtsythong@gmail.com";
+// The CV's header sends readers here instead of to GitHub directly, on the
+// reasoning that one link can stand for all of them. That only holds if this
+// page actually carries the onward link — until it did, the trail ended here.
+const githubUrl = "https://github.com/NewtonSythong";
+const githubHandle = "github.com/NewtonSythong";
 ---
 
 <section id="contact" aria-labelledby="contact-heading">
@@ -9,15 +14,18 @@ const email = "newtsythong@gmail.com";
 	<div class="actions">
 		<a class="resume" href="/resume.pdf" download>Download résumé (PDF)</a>
 		<a class="email" href={`mailto:${email}`}>{email}</a>
+		<a class="github" href={githubUrl} target="_blank" rel="noopener noreferrer">
+			{githubHandle}
+		</a>
 	</div>
 </section>
 
 <style>
 	/* Section furniture comes from src/styles/global.css; link colour is now
-	   the document default, so only the two calls to action are styled here.
+	   the document default, so only the calls to action are styled here.
 	   Contact is the last thing on the page and the point of the whole site,
-	   so the résumé download is given a filled button and the email a quieter
-	   monospace link beside it. */
+	   so the résumé download is given a filled button and the two ways of
+	   reaching Newton sit beside it as quieter monospace links. */
 	.actions {
 		display: flex;
 		flex-wrap: wrap;
@@ -46,8 +54,31 @@ const email = "newtsythong@gmail.com";
 		transform: translateY(-2px);
 	}
 
-	.email {
+	.email,
+	.github {
 		font-family: var(--font-mono);
 		font-size: 0.9rem;
+	}
+
+	/* The handle is shown in full rather than as the word "GitHub", so the
+	   destination is legible before it is clicked and readable if the page is
+	   printed. It carries the same leaning arrow the Projects cards give
+	   their outbound links; the email does not, because a mailto opens a
+	   compose window rather than going anywhere. */
+	.github {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		text-decoration: none;
+	}
+
+	.github::after {
+		content: "→";
+		transition: transform 0.25s var(--ease);
+	}
+
+	.github:hover::after,
+	.github:focus-visible::after {
+		transform: translateX(3px);
 	}
 </style>

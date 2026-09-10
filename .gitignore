@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Saved browser sessions for npm run shots. Cookies for the live demos.
+.auth/

@@ -48,6 +48,15 @@ export const projectSchema = z
 		// could be forgotten later.
 		contribution: z.string(),
 		liveDemoUrl: z.url().optional(),
+		// Where the code lives. Kept separate from `liveDemoUrl` because the
+		// two answer different questions — one proves it runs, the other lets
+		// somebody read how it was built — and a recruiter evaluating a
+		// developer usually wants the second.
+		//
+		// Optional, and expected to stay unset on most entries: the
+		// university projects were team coursework in private repositories,
+		// and publishing those is not this site's call to make.
+		sourceUrl: z.url().optional(),
 		// The project's single headline capture — the card thumbnail and the
 		// detail-page hero. Optional, because not every project has one yet.
 		image: projectImageSchema.optional(),
