@@ -57,8 +57,8 @@ After that, `git push`/`git pull` authenticate automatically on that device.
 ## Project screenshots
 
 The images on the project cards are captured from the live apps by a script, not
-by hand, so they can be refreshed from any machine rather than from whichever
-one happens to have the originals on it:
+by hand, so they can be refreshed from any machine rather than from whichever one
+happens to have the originals on it:
 
 ```sh
 npx playwright install chromium   # once per device
@@ -66,18 +66,37 @@ npm run shots                     # every shot
 npm run shots -- scam             # only shots whose name contains "scam"
 ```
 
-Each shot is rendered in a small 16:9 viewport at three times device scale and
-downsampled to a 1600x900 `.webp` in `public/images/projects/`, which is the
-size the cards and the detail-page galleries expect. To add or change a shot,
-edit the `SHOTS` list at the top of
-[`scripts/capture-screenshots.mjs`](./scripts/capture-screenshots.mjs) — a shot
-is a name, a URL, and optionally a `setup(page)` that clicks the app into the
-state worth photographing. Then add the file to the project's front matter in
-`src/content/projects/`, with `alt`, `width` and `height`, all of which the
-content schema requires.
+Each shot declares the exact size it must come out at, because the cards and
+galleries hard-code `width` and `height` in the project front matter and a shot
+delivered at a different aspect arrives visibly squashed. The viewport is derived
+from that size, so the render and the output can never disagree; the render
+itself is done at three times device scale and downsampled, which is what keeps
+the text sharp. To add or change a shot, edit the `SHOTS` list at the top of
+[`scripts/capture-screenshots.mjs`](./scripts/capture-screenshots.mjs) — a shot is
+a name, a URL, an output size, a render width, and optionally a `setup(page)`
+that clicks the app into the state worth photographing. Then add the file to the
+project's front matter in `src/content/projects/`, with `alt`, `width` and
+`height`, all of which the content schema requires.
 
-Only the scam checker is wired up so far; the other projects' images predate the
-script and were captured by hand.
+### Screens behind a login
+
+Note-Pilot, Fresh-Flat and ProductCatalouge keep everything worth photographing
+behind a sign-in, so those shots reuse a saved browser session:
+
+```sh
+npm run shots:login -- note-pilot   # opens a real browser; sign in, press Enter
+npm run shots                       # now captures the signed-in screens too
+```
+
+Signing in is deliberately not scripted. Three apps means three different forms
+and three sets of credentials, and credentials do not belong in this repo — so
+the browser opens, a person signs in, and only the cookies the site itself sets
+are kept, in a git-ignored `.auth/`. Until a session is saved, those shots are
+skipped with a message naming the command that would unlock them, and the run
+still succeeds.
+
+BasicImageEditor has no live URL, so its image cannot be scripted at all and is
+still the hand-captured original.
 
 ## Project structure
 
