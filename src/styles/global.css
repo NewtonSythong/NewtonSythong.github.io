@@ -663,10 +663,15 @@ main > article > h1::after {
 	padding-top: 1.1rem;
 }
 
+/* Verdana bold rather than the theme's Courier New: Courier's hairline
+   strokes break up at tag size, and the glossy split runs through the middle
+   of every letter, so the lower half is kept light as well. */
 [data-theme="y2k"] .tags li {
-	color: #002244;
+	color: #000;
+	font-family: var(--font-sans);
+	font-weight: bold;
 	border-color: #66ccff;
-	background: linear-gradient(#e0f7ff, #7fd4ff 50%, #33aaff 51%, #99e0ff);
+	background: linear-gradient(#f0fbff, #bfe9ff 50%, #8fd6ff 51%, #d6f3ff);
 	box-shadow: inset 0 1px 0 #fff;
 }
 
@@ -674,7 +679,7 @@ main > article > h1::after {
 	[data-theme="y2k"] .tags li:hover {
 		color: #000;
 		border-color: #ff00ff;
-		background: linear-gradient(#ffe0ff, #ff99ff 50%, #ff55ff 51%, #ffb3ff);
+		background: linear-gradient(#fff0ff, #ffc2ff 50%, #ff99ff 51%, #ffd6ff);
 	}
 
 	[data-theme="y2k"] .card-link:hover {
