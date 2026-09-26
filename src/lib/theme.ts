@@ -8,7 +8,10 @@
 // `ThemeStorage`/`SystemPreference` shapes below structurally, so callers in
 // the browser can pass them straight through with no wrapper.
 
-export type Theme = "light" | "dark";
+// "y2k" is opt-in only: the OS preference can resolve to light or dark, but
+// a visitor reaches the Y2K look solely by cycling to it.
+export const THEMES = ["light", "dark", "y2k"] as const;
+export type Theme = (typeof THEMES)[number];
 
 const STORAGE_KEY = "theme";
 
@@ -22,7 +25,7 @@ export interface SystemPreference {
 }
 
 function isTheme(value: string | null): value is Theme {
-	return value === "light" || value === "dark";
+	return (THEMES as readonly (string | null)[]).includes(value);
 }
 
 /** Reads a manually-chosen theme override, if one was previously persisted. */
@@ -44,13 +47,18 @@ export function resolveInitialTheme(storage: ThemeStorage, preference: SystemPre
 	return getStoredTheme(storage) ?? getSystemTheme(preference);
 }
 
+/** The theme after `current` in THEMES, wrapping round to the first. */
+export function nextTheme(current: Theme): Theme {
+	return THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
+}
+
 /**
- * Flips the current theme, persists the choice as a manual override (so it
- * survives future reloads regardless of what the OS preference does), and
- * returns the new theme for the caller to apply.
+ * Advances to the next theme in THEMES (wrapping round), persists the choice
+ * as a manual override (so it survives future reloads regardless of what the
+ * OS preference does), and returns the new theme for the caller to apply.
  */
-export function toggleTheme(current: Theme, storage: ThemeStorage): Theme {
-	const next: Theme = current === "dark" ? "light" : "dark";
+export function cycleTheme(current: Theme, storage: ThemeStorage): Theme {
+	const next = nextTheme(current);
 	storage.setItem(STORAGE_KEY, next);
 	return next;
 }

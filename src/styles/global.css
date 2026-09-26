@@ -62,6 +62,34 @@
 	--grid-opacity: 0.7;
 }
 
+/* Y2K: a GeoCities-era starfield with Windows 98 chrome. The tokens carry
+   the palette; the "Y2K theme" section at the end of this file carries the
+   bevels, title bars and WordArt that tokens alone cannot express. Contrast
+   still holds for reading — white and pale lavender on near-black navy. */
+:root[data-theme="y2k"] {
+	color-scheme: dark;
+
+	--bg-hsl: 242 70% 7%;
+	--text-hsl: 0 0% 100%;
+	--muted-hsl: 250 70% 90%;
+	--accent-hsl: 180 100% 55%;
+	--border-hsl: 220 8% 75%;
+	--surface-hsl: 240 60% 15%;
+
+	--glow-one: 300 100% 55%;
+	--glow-two: 180 100% 45%;
+	--glow-opacity: 0.3;
+	--grid-opacity: 0.35;
+
+	--font-mono: "Courier New", Courier, monospace;
+	--font-sans: Verdana, Tahoma, Geneva, sans-serif;
+	--radius: 0;
+
+	--y2k-silver: linear-gradient(#ffffff, #c0c0c0 60%, #a8a8a8);
+	--y2k-titlebar: linear-gradient(90deg, #000080, #1084d0);
+	--y2k-bevel: #ffffff #404040 #404040 #ffffff;
+}
+
 :root {
 	--color-bg: hsl(var(--bg-hsl));
 	--color-text: hsl(var(--text-hsl));
@@ -552,6 +580,123 @@ main > article > h1::after {
 	outline: 2px solid var(--color-accent);
 	outline-offset: 3px;
 	border-radius: 3px;
+}
+
+/* --- Y2K theme -----------------------------------------------------------
+ * Everything here is scoped to [data-theme="y2k"], so the other two themes
+ * never see it. Structure is untouched: this only reskins what the tokens
+ * cannot — tiled stars, raised silver bevels, navy title bars on every card
+ * and WordArt headings.
+ */
+
+[data-theme="y2k"] body {
+	background-image:
+		radial-gradient(1px 1px at 23px 37px, #fff, transparent),
+		radial-gradient(1px 1px at 131px 83px, #fff, transparent),
+		radial-gradient(2px 2px at 71px 151px, #ffff99, transparent),
+		radial-gradient(1px 1px at 181px 19px, #99ffff, transparent),
+		radial-gradient(1px 1px at 157px 173px, #fff, transparent);
+	background-size: 200px 200px;
+	scrollbar-color: #c0c0c0 #000080;
+}
+
+[data-theme="y2k"] ::selection {
+	background: #ff00ff;
+	color: #fff;
+}
+
+[data-theme="y2k"] .site-header {
+	background: var(--y2k-titlebar);
+	border-bottom: 2px solid #c0c0c0;
+}
+
+[data-theme="y2k"] .site-nav ul a {
+	color: #fff;
+	font-weight: bold;
+}
+
+[data-theme="y2k"] :is(.nav-github, #theme-toggle) {
+	background: var(--y2k-silver);
+	color: #000;
+	border: 2px solid;
+	border-color: var(--y2k-bevel);
+	border-radius: 0;
+}
+
+[data-theme="y2k"] :is(.nav-github, #theme-toggle):hover,
+[data-theme="y2k"] :is(.nav-github, #theme-toggle):focus-visible {
+	color: #000080;
+	background: linear-gradient(#ffffff, #dcdcdc);
+}
+
+[data-theme="y2k"] :is(.nav-github, #theme-toggle):active {
+	border-color: #404040 #ffffff #ffffff #404040;
+}
+
+[data-theme="y2k"] :is(main > section > h2, main > article > h1) {
+	font-family: "Arial Black", Impact, sans-serif;
+	font-style: italic;
+	text-shadow:
+		2px 2px 0 #ff00ff,
+		4px 4px 0 #000080;
+}
+
+[data-theme="y2k"] :is(main > section > h2, main > article > h1)::after {
+	height: 3px;
+	background: linear-gradient(90deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+}
+
+/* A Windows 98 window: raised bevel, and a navy title bar painted into the
+   top padding rather than added as markup. */
+[data-theme="y2k"] .card {
+	border: 2px solid;
+	border-color: var(--y2k-bevel);
+	padding-top: 2.1rem;
+	background:
+		var(--y2k-titlebar) top / 100% 1.1rem no-repeat,
+		hsl(var(--surface-hsl) / 0.92);
+}
+
+/* Project cards zero their top padding so the thumbnail runs edge to edge;
+   here it runs edge to edge beneath the title bar instead. */
+[data-theme="y2k"] .card:has(.thumb) {
+	padding-top: 1.1rem;
+}
+
+[data-theme="y2k"] .tags li {
+	color: #002244;
+	border-color: #66ccff;
+	background: linear-gradient(#e0f7ff, #7fd4ff 50%, #33aaff 51%, #99e0ff);
+	box-shadow: inset 0 1px 0 #fff;
+}
+
+@media (hover: hover) {
+	[data-theme="y2k"] .tags li:hover {
+		color: #000;
+		border-color: #ff00ff;
+		background: linear-gradient(#ffe0ff, #ff99ff 50%, #ff55ff 51%, #ffb3ff);
+	}
+
+	[data-theme="y2k"] .card-link:hover {
+		box-shadow: 6px 6px 0 #ff00ff;
+	}
+}
+
+[data-theme="y2k"] body::after {
+	content: "Best viewed in Netscape Navigator 4.0 at 800×600";
+	display: block;
+	padding: 1.5rem 1rem 2rem;
+	text-align: center;
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	color: #ffff00;
+	animation: y2k-blink 1.2s steps(2, start) infinite;
+}
+
+@keyframes y2k-blink {
+	to {
+		visibility: hidden;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
