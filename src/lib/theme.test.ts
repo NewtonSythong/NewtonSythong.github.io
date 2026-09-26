@@ -3,7 +3,7 @@ import {
 	getStoredTheme,
 	getSystemTheme,
 	resolveInitialTheme,
-	toggleTheme,
+	cycleTheme,
 	type ThemeStorage,
 } from "./theme";
 
@@ -26,6 +26,10 @@ describe("getStoredTheme", () => {
 
 	it("returns the stored theme when a valid value is present", () => {
 		expect(getStoredTheme(createStorage("dark"))).toBe("dark");
+	});
+
+	it("returns y2k when it was the stored choice", () => {
+		expect(getStoredTheme(createStorage("y2k"))).toBe("y2k");
 	});
 
 	it("returns null when the stored value isn't a recognised theme", () => {
@@ -55,18 +59,17 @@ describe("resolveInitialTheme", () => {
 	});
 });
 
-describe("toggleTheme", () => {
-	it("flips dark to light", () => {
-		expect(toggleTheme("dark", createStorage())).toBe("light");
-	});
-
-	it("flips light to dark", () => {
-		expect(toggleTheme("light", createStorage())).toBe("dark");
+describe("cycleTheme", () => {
+	it("goes light, dark, y2k, then back to light", () => {
+		const storage = createStorage();
+		expect(cycleTheme("light", storage)).toBe("dark");
+		expect(cycleTheme("dark", storage)).toBe("y2k");
+		expect(cycleTheme("y2k", storage)).toBe("light");
 	});
 
 	it("persists the new theme so it survives a reload", () => {
-		const storage = createStorage("light");
-		toggleTheme("light", storage);
-		expect(getStoredTheme(storage)).toBe("dark");
+		const storage = createStorage("dark");
+		cycleTheme("dark", storage);
+		expect(getStoredTheme(storage)).toBe("y2k");
 	});
 });

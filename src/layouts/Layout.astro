@@ -112,8 +112,8 @@ const navLinks = [
 						target="_blank"
 						rel="noopener noreferrer">GitHub</a
 					>
-					<button id="theme-toggle" type="button" aria-label="Toggle color theme">
-						<span class="theme-toggle-text">Toggle theme</span>
+					<button id="theme-toggle" type="button" aria-label="Change theme">
+						<span class="theme-toggle-text">Theme</span>
 					</button>
 				</div>
 			</nav>
@@ -125,12 +125,17 @@ const navLinks = [
 </html>
 
 <script>
-	import { resolveInitialTheme, toggleTheme, type Theme } from "../lib/theme";
+	import { cycleTheme, nextTheme, resolveInitialTheme, type Theme } from "../lib/theme";
 
+	// Three themes rather than an on/off pair, so the button names the
+	// current one and says where the next click goes instead of carrying
+	// `aria-pressed`, which only means something for a two-state switch.
 	function applyTheme(theme: Theme) {
 		document.documentElement.dataset.theme = theme;
 		const button = document.getElementById("theme-toggle");
-		button?.setAttribute("aria-pressed", String(theme === "dark"));
+		button?.setAttribute("aria-label", `Theme: ${theme}. Switch to ${nextTheme(theme)}`);
+		const text = button?.querySelector(".theme-toggle-text");
+		if (text) text.textContent = `Theme: ${theme}`;
 	}
 
 	// Astro bundles this as a deferred module script, so there's a brief
@@ -144,7 +149,7 @@ const navLinks = [
 
 	document.getElementById("theme-toggle")?.addEventListener("click", () => {
 		const current = (document.documentElement.dataset.theme as Theme | undefined) ?? "light";
-		applyTheme(toggleTheme(current, window.localStorage));
+		applyTheme(cycleTheme(current, window.localStorage));
 	});
 
 	// The sticky header is borderless while the page sits at the top and
