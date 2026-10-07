@@ -44,13 +44,16 @@ reader already trusts is treated as the answer rather than as a consolation
 prize, and that person can reply from a page with three buttons on it without
 typing a word.
 
-The number I quote is the unflattering one. Run against 292 real reported scam
-texts nobody on the project had read, with the deterministic rules switched off
-so the language model's half had to stand on its own, it found something in
-**59.9%** of them. The small corpus the project had been developing against was
-reporting twelve out of twelve. That gap is the cost of measuring an engine on
-messages somebody has already fixed it against, and finding it is why the
-original corpus is now retired rather than quietly extended.
+The number I quote is the unflattering one. Half of a corpus of 292 real
+reported scam texts is held back and never read, only scored, so that improving
+the engine cannot quietly destroy the means of telling whether it improved — the
+harness prints the ids of the messages it missed and refuses to print their
+text. Against those 146, with the deterministic rules switched off so the
+language model's half had to stand on its own, it finds something in **61.0%**
+of them. The small corpus the project had been developing against was reporting
+twelve out of twelve. That gap is the cost of measuring an engine on messages
+somebody has already fixed it against, and finding it is why the original corpus
+is now retired rather than quietly extended.
 
 The same run exposed a blind spot worth more than the headline. Wrong-number
 texts — "is this Sarah? sorry, wrong number", the opening move of the long
@@ -58,8 +61,9 @@ investment frauds, aimed at people who are lonely — were caught two times in
 forty, because nothing in the engine covered a message that asks for nothing,
 names nobody and links nowhere. A pattern written from the FTC's and Netsafe's
 published descriptions, rather than from any message in the corpus, took that to
-thirteen in forty with no new false alarms. It is the first pattern here whose
-generalisation was established before anybody read the misses.
+thirteen in forty across the whole corpus with no new false alarms. It is the
+first pattern here whose generalisation was established before anybody read the
+misses.
 
 The benchmark is built to be distrusted, and the write-up argues against its own
 results. Four messages are excluded from the headline because the engine was
@@ -68,9 +72,14 @@ nothing — the corpus records that permanently and every run says so. A second
 benchmark runs the language model's half with the rules taken away, because most
 real scam texts carry a lookalike domain the rules catch on their own: without
 it, a broken pattern in the model would be invisible in the headline number. And
-the one result that looks clean — zero false alarms on genuine messages, on both
-models tried — is written up as *not* settled, because ten legitimate messages
-cannot rule out a false-alarm rate this app would consider unacceptable.
+the one result that looked clean — zero false alarms on genuine messages, on
+both models tried — turned out to be a property of the corpus rather than of the
+engine. A probe written for something else caught the app calling a friend's
+"hey stranger, it's been far too long" catch-up a likely scam, on a pattern that
+had measured perfectly for nine days, because no message of that shape had ever
+been written down. Thirteen legitimate messages, all of them written by me,
+cannot rule out a false-alarm rate this app would consider unacceptable, so the
+write-up says that rather than quoting the zero.
 
 It is [AGPL-licensed and open to
 contributions](https://github.com/NewtonSythong/is-this-a-scam). The most useful
