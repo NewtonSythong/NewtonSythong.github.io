@@ -38,6 +38,7 @@ describe("projectSchema", () => {
 		contribution:
 			"Built the flat/invite CRUD API and join/leave-flat features.",
 		liveDemoUrl: "https://fresh-flat.vercel.app/",
+		rank: 1,
 	};
 
 	it("accepts a valid entry", () => {
@@ -137,6 +138,7 @@ describe("projectSchema", () => {
 			description: "A non-destructive desktop image editor.",
 			contribution: "Implemented rotate/flip and block averaging filters.",
 			status: "held-back",
+			rank: 6,
 		});
 
 		expect(result.success).toBe(true);
@@ -149,4 +151,9 @@ describe("projectSchema", () => {
 			expect(result.data.status).toBe("featured");
 		}
 	});
+	it("rejects an entry with no rank", () => {
+		const { rank: _rank, ...withoutRank } = validProject;
+		expect(projectSchema.safeParse(withoutRank).success).toBe(false);
+	});
 });
+

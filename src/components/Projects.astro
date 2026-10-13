@@ -1,12 +1,14 @@
 ---
 import { getCollection } from "astro:content";
+import { byRank } from "../content/order";
 
 // Fixture/placeholder entries live in src/content/projects/ at this stage
 // (ticket 10 replaces them with real content). `status: "held-back"`
 // entries are filtered out here rather than at the schema level, so they
 // stay valid content that simply isn't ready to feature yet.
 const allProjects = await getCollection("projects");
-const featured = allProjects.filter((project) => project.data.status === "featured");
+// Sorted by `rank`, not load order, so the strongest project is first.
+const featured = byRank(allProjects.filter((project) => project.data.status === "featured"));
 ---
 
 <section id="projects" aria-labelledby="projects-heading">

@@ -67,6 +67,12 @@ export const projectSchema = z
 		// so every existing entry stays valid without editing.
 		gallery: z.array(projectImageSchema).default([]),
 		status: z.enum(["featured", "held-back"]).default("featured"),
+		// Display order on the home page, 1 first. Required and explicit
+		// rather than inferred from file names or load order, which carry no
+		// judgement: the order is a ranking of which project best shows what
+		// Newton can do. `checkRanks` in order.ts keeps featured ranks
+		// unique and gap-free, because a gap would read as a missing entry.
+		rank: z.number().int().positive(),
 	})
 	.refine((project) => project.contribution.trim() !== project.description.trim(), {
 		message: "`contribution` must describe Newton's specific role and be distinct from `description`",
