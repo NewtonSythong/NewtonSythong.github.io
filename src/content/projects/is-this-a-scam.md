@@ -1,9 +1,10 @@
 ---
 name: "Is This a Scam?"
 slug: "is-this-a-scam"
+rank: 1
 tags: ["TypeScript", "Next.js", "Claude API", "Safe Browsing", "AGPL"]
 description: "A scam checker for older and less digitally confident New Zealanders. Paste a suspicious text or email and get an answer in plain language — and never the words 'this is safe', because a false reassurance costs someone their savings while a false warning costs them a phone call."
-contribution: "Sole design and build. Set the product constraints the architecture is built around — that the app may never call a message safe, that the worse of its two engines always wins, and that the model may not write its own sentences but must pick from a reviewed catalogue and quote the words that made it pick, so hallucination is caught by code rather than by the reader. Required a published effectiveness benchmark before deployment rather than shipping on passing tests, and licensed it AGPL so a degraded fork cannot be deployed as a black box."
+contribution: "Designed and directed it alone, and built it with Claude Code as a pair. Set the product constraints the architecture is built around — that the app may never call a message safe, that the worse of its two engines always wins, and that the model may not write its own sentences but must pick from a reviewed catalogue and quote the words that made it pick, so hallucination is caught by code rather than by the reader. Required a published effectiveness benchmark before deployment rather than shipping on passing tests, and licensed it AGPL so a degraded fork cannot be deployed as a black box."
 liveDemoUrl: "https://is-this-a-scam-pink.vercel.app"
 sourceUrl: "https://github.com/NewtonSythong/is-this-a-scam"
 image:
