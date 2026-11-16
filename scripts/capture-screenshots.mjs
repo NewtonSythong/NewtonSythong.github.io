@@ -3,7 +3,7 @@
  * Capture the project imagery used on the site, straight from the live apps.
  *
  *   npm run shots            # every shot below
- *   npm run shots -- scam    # only shots whose name contains "scam"
+ *   npm run shots -- note    # only shots whose name contains "note"
  *
  * Nothing here depends on this machine: any device with Node and
  * `npx playwright install chromium` produces the same files.
@@ -14,10 +14,6 @@
  * that size rather than fixed, so the render and the output always agree; only
  * the pixel count is chosen here, and it is chosen high (three times device
  * scale) so the downsample keeps text sharp.
- *
- * The scam checker is a phone app on the web — a fixed 680px column that would
- * sit marooned in a wide frame — so it is shot in a narrow one where that column
- * nearly fills the width. The desktop apps get a wider frame.
  *
  * Shots of screens behind a login declare `session`. See saveSession below.
  */
@@ -32,7 +28,6 @@ const AUTH_DIR = path.join(process.cwd(), ".auth");
 const SCALE = 3;
 const QUALITY = 82;
 
-const SCAM = "https://is-this-a-scam-pink.vercel.app";
 const NOTE_PILOT = "https://note-pilot-sage.vercel.app";
 const FRESH_FLAT = "https://fresh-flat-psi.vercel.app";
 const CATALOGUE = "https://productcatalouge.onrender.com";
@@ -53,40 +48,6 @@ const SESSIONS = {
  * `session` names a saved login from SESSIONS above.
  */
 const SHOTS = [
-  {
-    name: "is-this-a-scam",
-    url: SCAM,
-    out: [1600, 900],
-    view: 1100,
-    async setup(page) {
-      await check(page, /ANZ: unusual activity/);
-      await frameVerdict(page);
-    },
-  },
-  { name: "is-this-a-scam-home", url: SCAM, out: [1600, 900], view: 1100 },
-  {
-    name: "is-this-a-scam-quiet",
-    url: SCAM,
-    out: [1600, 900],
-    view: 1100,
-    async setup(page) {
-      await check(page, /ANZ: your statement is ready/);
-      await frameVerdict(page);
-    },
-  },
-  {
-    name: "is-this-a-scam-gift-card",
-    url: SCAM,
-    out: [1600, 900],
-    view: 1100,
-    async setup(page) {
-      await check(page, /Hi Mum, this is my new number/);
-      await frameVerdict(page);
-    },
-  },
-  { name: "is-this-a-scam-scams", url: SCAM + "/scams", out: [1600, 900], view: 1100 },
-  { name: "is-this-a-scam-helping", url: SCAM + "/helping", out: [1600, 900], view: 1100 },
-
   // Note-Pilot. The landing page is public; every screen worth showing is not.
   // Rendered wider than it is delivered, then downsampled, so the headline and
   // all four feature cards land in one frame — which is what its caption on the
@@ -154,25 +115,6 @@ const SHOTS = [
     session: "catalogue",
   },
 ];
-
-/** Fill the box from one of the example messages and run the check. */
-async function check(page, example) {
-  await page.getByRole("button", { name: example }).click();
-  await page.getByRole("button", { name: /Check this message/ }).click();
-  await page.waitForSelector(".verdict", { timeout: 60_000 });
-  await page.waitForLoadState("networkidle");
-}
-
-/** Scroll so the verdict sits just under the top of the frame. */
-async function frameVerdict(page) {
-  await page.evaluate(() => {
-    const verdict = document.querySelector(".verdict");
-    if (verdict) {
-      window.scrollTo({ top: verdict.getBoundingClientRect().top + window.scrollY - 24 });
-    }
-  });
-  await page.waitForTimeout(400);
-}
 
 const sessionFile = (name) => path.join(AUTH_DIR, name + ".json");
 

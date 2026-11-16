@@ -63,7 +63,7 @@ happens to have the originals on it:
 ```sh
 npx playwright install chromium   # once per device
 npm run shots                     # every shot
-npm run shots -- scam             # only shots whose name contains "scam"
+npm run shots -- note             # only shots whose name contains "note"
 ```
 
 Each shot declares the exact size it must come out at, because the cards and
